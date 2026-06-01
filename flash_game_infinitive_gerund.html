@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>to do / doing — Flash Game</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1f2e;color:#fff;height:100vh;overflow:hidden;user-select:none}
+
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .3s}
+.screen.hidden{opacity:0;pointer-events:none}
+
+/* START SCREEN */
+#start-screen{gap:24px;padding:40px}
+.game-title{font-size:48px;font-weight:700;color:#fff;letter-spacing:-1px;text-align:center}
+.game-title span{color:#4ade80}
+.game-sub{font-size:16px;color:#94a3b8;text-align:center}
+.name-row{display:flex;gap:16px;width:100%;max-width:500px}
+.player-input-wrap{flex:1;display:flex;flex-direction:column;gap:6px}
+.player-input-wrap label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b}
+.player-input-wrap label.p1{color:#60a5fa}
+.player-input-wrap label.p2{color:#f472b6}
+.player-input-wrap input{padding:12px 14px;border-radius:10px;border:1.5px solid #334155;background:#0f172a;color:#fff;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s}
+.player-input-wrap input:focus{border-color:#4ade80}
+
+.keys-preview{display:flex;gap:24px;margin:8px 0}
+.key-group{display:flex;flex-direction:column;align-items:center;gap:6px}
+.key-group-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.key-group-title{font-size:13px;font-weight:600}
+.key-group-title.p1{color:#60a5fa}
+.key-group-title.p2{color:#f472b6}
+.key-row{display:flex;gap:8px}
+.key{padding:6px 14px;border-radius:6px;border:1.5px solid #334155;background:#1e293b;font-size:14px;font-weight:700;color:#fff;min-width:44px;text-align:center}
+.key small{display:block;font-size:10px;font-weight:400;color:#64748b;margin-top:2px}
+
+.round-select{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.round-btn{padding:10px 18px;border-radius:10px;border:1.5px solid #334155;background:#1e293b;color:#94a3b8;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s}
+.round-btn:hover{border-color:#4ade80;color:#4ade80}
+.round-btn.sel{border-color:#4ade80;background:#052e16;color:#4ade80;font-weight:600}
+
+.start-btn{padding:16px 48px;border-radius:12px;border:none;background:#4ade80;color:#052e16;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;margin-top:8px}
+.start-btn:hover{background:#22c55e;transform:scale(1.02)}
+.start-btn:active{transform:scale(0.98)}
+
+/* GAME SCREEN */
+#game-screen{justify-content:space-between;padding:0}
+
+.scoreboard{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;min-height:90px}
+.player-score{display:flex;flex-direction:column;justify-content:center;padding:16px 24px;gap:2px}
+.ps-name{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.ps-score{font-size:42px;font-weight:700;line-height:1}
+.ps-keys{font-size:11px;color:#64748b;margin-top:4px}
+.ps-1{background:#0f1729;border-bottom:2px solid #60a5fa}
+.ps-1 .ps-name{color:#60a5fa}
+.ps-1 .ps-score{color:#60a5fa}
+.ps-2{background:#1a0f1f;border-bottom:2px solid #f472b6;text-align:right}
+.ps-2 .ps-name{color:#f472b6}
+.ps-2 .ps-score{color:#f472b6}
+.score-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 20px;background:#0a0e1a;border-bottom:2px solid #1e293b;gap:2px}
+.round-info{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.round-progress{font-size:16px;font-weight:600;color:#fff}
+
+.game-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px}
+.timer-bar-wrap{width:300px;height:6px;background:#1e293b;border-radius:3px;overflow:hidden}
+.timer-bar{height:100%;border-radius:3px;background:#4ade80;transition:width .1s linear;width:100%}
+.timer-bar.warn{background:#fb923c}
+.timer-bar.danger{background:#ef4444}
+
+.verb-display{font-size:72px;font-weight:700;color:#fff;letter-spacing:-2px;text-align:center;min-height:90px;display:flex;align-items:center;animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.verb-display.correct{color:#4ade80}
+.verb-display.wrong{color:#ef4444}
+
+.answer-hint{font-size:15px;color:#475569;text-align:center;min-height:22px}
+
+.answer-zone{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.answer-btn{padding:28px 20px;font-size:28px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .1s;display:flex;flex-direction:column;align-items:center;gap:8px}
+.answer-btn.todo{background:#1e3a5f;color:#93c5fd}
+.answer-btn.todo:hover{background:#1e40af;color:#fff}
+.answer-btn.doing{background:#3b1f4a;color:#d8b4fe}
+.answer-btn.doing:hover{background:#6b21a8;color:#fff}
+.answer-btn:active{transform:scale(0.97)}
+.btn-key{font-size:11px;font-weight:400;color:#64748b;letter-spacing:.5px}
+.answer-btn.flash-correct{background:#14532d !important;color:#4ade80 !important}
+.answer-btn.flash-wrong{background:#7f1d1d !important;color:#ef4444 !important}
+
+.feedback-banner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;font-weight:700;padding:16px 32px;border-radius:14px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;text-align:center}
+.feedback-banner.show{opacity:1}
+.feedback-banner.correct{background:#14532d;color:#4ade80;border:2px solid #4ade80}
+.feedback-banner.wrong{background:#7f1d1d;color:#ef4444;border:2px solid #ef4444}
+.feedback-banner.timeout{background:#451a03;color:#fb923c;border:2px solid #fb923c}
+
+/* RESULT SCREEN */
+#result-screen{gap:20px;padding:40px}
+.result-title{font-size:36px;font-weight:700;color:#4ade80}
+.winner-name{font-size:52px;font-weight:700;color:#fff}
+.trophy{font-size:64px}
+.result-scores{display:flex;gap:24px}
+.res-card{padding:20px 32px;border-radius:14px;text-align:center;border:1.5px solid}
+.res-card.p1{border-color:#60a5fa;background:#0f1729}
+.res-card.p2{border-color:#f472b6;background:#1a0f1f}
+.res-card-name{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.res-card.p1 .res-card-name{color:#60a5fa}
+.res-card.p2 .res-card-name{color:#f472b6}
+.res-card-score{font-size:48px;font-weight:700}
+.res-card.p1 .res-card-score{color:#60a5fa}
+.res-card.p2 .res-card-score{color:#f472b6}
+.res-card.winner{transform:scale(1.08)}
+
+.action-row{display:flex;gap:12px;margin-top:8px}
+.action-btn{padding:12px 28px;border-radius:10px;border:1.5px solid;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.action-btn.primary{background:#4ade80;border-color:#4ade80;color:#052e16}
+.action-btn.primary:hover{background:#22c55e}
+.action-btn.secondary{background:transparent;border-color:#334155;color:#94a3b8}
+.action-btn.secondary:hover{border-color:#64748b;color:#fff}
+
+/* COUNTDOWN */
+#countdown-screen{font-size:120px;font-weight:700;color:#4ade80;animation:pulse 1s ease-in-out}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+</style>
+</head>
+<body>
+
+<!-- START -->
+<div class="screen" id="start-screen">
+  <div class="game-title">to do <span>/</span> doing</div>
+  <div class="game-sub">Infinitive vs Gerund — Flash Game · 2 players</div>
+
+  <div class="name-row">
+    <div class="player-input-wrap">
+      <label class="p1">Player 1</label>
+      <input type="text" id="p1-name" placeholder="Name..." value="Player 1" maxlength="12">
+    </div>
+    <div class="player-input-wrap">
+      <label class="p2">Player 2</label>
+      <input type="text" id="p2-name" placeholder="Name..." value="Player 2" maxlength="12">
+    </div>
+  </div>
+
+  <div class="keys-preview">
+    <div class="key-group">
+      <div class="key-group-title p1">Player 1</div>
+      <div class="key-row">
+        <div class="key">A<small>to do</small></div>
+        <div class="key">S<small>doing</small></div>
+      </div>
+      <div class="key-group-label">left hand</div>
+    </div>
+    <div style="font-size:24px;color:#334155;align-self:center">vs</div>
+    <div class="key-group">
+      <div class="key-group-title p2">Player 2</div>
+      <div class="key-row">
+        <div class="key">K<small>to do</small></div>
+        <div class="key">L<small>doing</small></div>
+      </div>
+      <div class="key-group-label">right hand</div>
+    </div>
+  </div>
+
+  <div style="font-size:12px;color:#475569;text-align:center">Choose a round:</div>
+  <div class="round-select" id="round-select">
+    <button class="round-btn sel" data-round="inf" onclick="selectRound(this)">Round 1 — Infinitive only</button>
+    <button class="round-btn" data-round="ger" onclick="selectRound(this)">Round 2 — Gerund only</button>
+    <button class="round-btn" data-round="mix" onclick="selectRound(this)">Round 3 — Mixed ⚡</button>
+  </div>
+
+  <button class="start-btn" onclick="startCountdown()">Start Game</button>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="screen hidden" id="countdown-screen">3</div>
+
+<!-- GAME -->
+<div class="screen hidden" id="game-screen">
+  <div class="scoreboard">
+    <div class="player-score ps-1">
+      <div class="ps-name" id="p1-display">Player 1</div>
+      <div class="ps-score" id="p1-score">0</div>
+      <div class="ps-keys">A = to do &nbsp;·&nbsp; S = doing</div>
+    </div>
+    <div class="score-center">
+      <div class="round-info" id="round-label">Round 1</div>
+      <div class="round-progress" id="q-progress">1 / 12</div>
+    </div>
+    <div class="player-score ps-2">
+      <div class="ps-name" id="p2-display">Player 2</div>
+      <div class="ps-score" id="p2-score">0</div>
+      <div class="ps-keys">K = to do &nbsp;·&nbsp; L = doing</div>
+    </div>
+  </div>
+
+  <div class="game-center">
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+    <div class="verb-display" id="verb-display">—</div>
+    <div class="answer-hint" id="answer-hint"></div>
+  </div>
+
+  <div class="answer-zone">
+    <button class="answer-btn todo" id="btn-todo" onclick="handleClick('todo', null)">
+      to do
+      <span class="btn-key">A &nbsp;·&nbsp; K</span>
+    </button>
+    <button class="answer-btn doing" id="btn-doing" onclick="handleClick('doing', null)">
+      doing
+      <span class="btn-key">S &nbsp;·&nbsp; L</span>
+    </button>
+  </div>
+
+  <div class="feedback-banner" id="feedback"></div>
+</div>
+
+<!-- RESULT -->
+<div class="screen hidden" id="result-screen">
+  <div class="trophy" id="trophy">🏆</div>
+  <div class="result-title" id="result-title">Winner!</div>
+  <div class="winner-name" id="winner-name">Player 1</div>
+  <div class="result-scores">
+    <div class="res-card p1" id="res1">
+      <div class="res-card-name" id="res1-name">Player 1</div>
+      <div class="res-card-score" id="res1-score">0</div>
+    </div>
+    <div class="res-card p2" id="res2">
+      <div class="res-card-name" id="res2-name">Player 2</div>
+      <div class="res-card-score" id="res2-score">0</div>
+    </div>
+  </div>
+  <div class="action-row">
+    <button class="action-btn primary" onclick="playAgain()">Play again</button>
+    <button class="action-btn secondary" onclick="backToStart()">Change round</button>
+  </div>
+</div>
+
+<script>
+const VERBS = {
+  inf: [
+    {v:'decide',a:'todo'},{v:'forget',a:'todo'},{v:'hope',a:'todo'},
+    {v:'learn',a:'todo'},{v:'need',a:'todo'},{v:'offer',a:'todo'},
+    {v:'plan',a:'todo'},{v:'pretend',a:'todo'},{v:'promise',a:'todo'},
+    {v:'remember',a:'todo'},{v:'try',a:'todo'},{v:'want',a:'todo'},
+    {v:'would like',a:'todo'},{v:'choose',a:'todo'},{v:'agree',a:'todo'}
+  ],
+  ger: [
+    {v:'enjoy',a:'doing'},{v:'finish',a:'doing'},{v:'go on',a:'doing'},
+    {v:'hate',a:'doing'},{v:'like',a:'doing'},{v:'love',a:'doing'},
+    {v:'mind',a:'doing'},{v:'spend time',a:'doing'},{v:'stop',a:'doing'},
+    {v:'feel like',a:'doing'},{v:'avoid',a:'doing'},{v:'practise',a:'doing'},
+    {v:'suggest',a:'doing'},{v:'keep',a:'doing'},{v:'miss',a:'doing'}
+  ],
+  mix: []
+};
+VERBS.mix = shuffle([...VERBS.inf, ...VERBS.ger]).slice(0, 20);
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+let selectedRound = 'inf';
+let p1Score = 0, p2Score = 0;
+let questions = [];
+let qIndex = 0;
+let currentAnswer = null;
+let timerInterval = null;
+let timeLeft = 0;
+let answered = false;
+let lastCorrectPlayer = null;
+
+const ROUND_LABELS = {inf:'Round 1 — Infinitive', ger:'Round 2 — Gerund', mix:'Round 3 — Mixed ⚡'};
+const TIMER_DURATION = 3000;
+
+function selectRound(el){
+  document.querySelectorAll('.round-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedRound = el.dataset.round;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function startCountdown(){
+  const p1 = document.getElementById('p1-name').value.trim() || 'Player 1';
+  const p2 = document.getElementById('p2-name').value.trim() || 'Player 2';
+  document.getElementById('p1-display').textContent = p1;
+  document.getElementById('p2-display').textContent = p2;
+  document.getElementById('res1-name').textContent = p1;
+  document.getElementById('res2-name').textContent = p2;
+
+  showScreen('countdown-screen');
+  const el = document.getElementById('countdown-screen');
+  let n = 3;
+  el.textContent = n;
+  const interval = setInterval(()=>{
+    n--;
+    if(n===0){
+      el.textContent = 'GO!';
+      el.style.color='#4ade80';
+    } else if(n<0){
+      clearInterval(interval);
+      el.style.color='#4ade80';
+      startGame();
+    } else {
+      el.textContent = n;
+    }
+  },900);
+}
+
+function startGame(){
+  p1Score = 0; p2Score = 0;
+  document.getElementById('p1-score').textContent = '0';
+  document.getElementById('p2-score').textContent = '0';
+  document.getElementById('round-label').textContent = ROUND_LABELS[selectedRound];
+
+  questions = shuffle([...VERBS[selectedRound]]);
+  qIndex = 0;
+
+  showScreen('game-screen');
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(qIndex >= questions.length){
+    endGame();
+    return;
+  }
+  answered = false;
+  currentAnswer = questions[qIndex].a;
+  const verb = questions[qIndex].v;
+
+  document.getElementById('q-progress').textContent = (qIndex+1)+' / '+questions.length;
+  const vd = document.getElementById('verb-display');
+  vd.textContent = verb;
+  vd.className = 'verb-display';
+  document.getElementById('answer-hint').textContent = '';
+  hideFeedback();
+
+  document.getElementById('btn-todo').className = 'answer-btn todo';
+  document.getElementById('btn-doing').className = 'answer-btn doing';
+
+  startTimer();
+  qIndex++;
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft = TIMER_DURATION;
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = '100%';
+  bar.className = 'timer-bar';
+  const step = 50;
+  timerInterval = setInterval(()=>{
+    timeLeft -= step;
+    const pct = Math.max(0, timeLeft/TIMER_DURATION*100);
+    bar.style.width = pct+'%';
+    if(pct < 30) bar.className='timer-bar danger';
+    else if(pct < 60) bar.className='timer-bar warn';
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      if(!answered) handleTimeout();
+    }
+  }, step);
+}
+
+function handleTimeout(){
+  answered = true;
+  document.getElementById('answer-hint').textContent = 'Time! The answer was: '+formatAnswer(currentAnswer);
+  showFeedback('timeout', '⏱ Time out!');
+  setTimeout(nextQuestion, 1800);
+}
+
+function formatAnswer(a){
+  return a==='todo' ? 'to do (infinitive)' : 'doing (gerund)';
+}
+
+function handleClick(choice, player){
+  if(answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const correct = (choice === currentAnswer);
+  const btn = document.getElementById(choice==='todo'?'btn-todo':'btn-doing');
+
+  if(correct){
+    btn.className = 'answer-btn '+(choice==='todo'?'todo':'doing')+' flash-correct';
+    document.getElementById('answer-hint').textContent = '✓ Correct!  —  ' + formatAnswer(currentAnswer);
+    showFeedback('correct', '✓ Correct!');
+    setTimeout(nextQuestion, 1200);
+  } else {
+    btn.className = 'answer-btn '+(choice==='todo'?'todo':'doing')+' flash-wrong';
+    document.getElementById('answer-hint').textContent = '✗ Wrong! Answer: '+formatAnswer(currentAnswer);
+    showFeedback('wrong', '✗ Wrong!');
+    setTimeout(nextQuestion, 1500);
+  }
+}
+
+function handleKeyAnswer(choice, player){
+  if(answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const correct = (choice === currentAnswer);
+  const btn = document.getElementById(choice==='todo'?'btn-todo':'btn-doing');
+
+  if(correct){
+    btn.className = 'answer-btn '+(choice==='todo'?'todo':'doing')+' flash-correct';
+    if(player===1){ p1Score++; document.getElementById('p1-score').textContent=p1Score; }
+    else { p2Score++; document.getElementById('p2-score').textContent=p2Score; }
+    document.getElementById('answer-hint').textContent = '✓ '+(player===1?document.getElementById('p1-display').textContent:document.getElementById('p2-display').textContent)+' gets the point!';
+    showFeedback('correct', '✓ +'+(player===1?document.getElementById('p1-display').textContent:document.getElementById('p2-display').textContent));
+    setTimeout(nextQuestion, 1400);
+  } else {
+    btn.className = 'answer-btn '+(choice==='todo'?'todo':'doing')+' flash-wrong';
+    document.getElementById('answer-hint').textContent = '✗ Wrong! Answer: '+formatAnswer(currentAnswer);
+    showFeedback('wrong', '✗ Wrong!');
+    answered = false;
+    setTimeout(()=>{
+      if(!answered){
+        btn.className='answer-btn '+(choice==='todo'?'todo':'doing');
+        hideFeedback();
+        startTimer();
+      }
+    }, 800);
+  }
+}
+
+function showFeedback(type, text){
+  const el = document.getElementById('feedback');
+  el.textContent = text;
+  el.className = 'feedback-banner show '+type;
+  setTimeout(()=>el.classList.remove('show'), 1000);
+}
+function hideFeedback(){
+  document.getElementById('feedback').className='feedback-banner';
+}
+
+document.addEventListener('keydown',(e)=>{
+  const k = e.key.toLowerCase();
+  if(k==='a') handleKeyAnswer('todo',1);
+  else if(k==='s') handleKeyAnswer('doing',1);
+  else if(k==='k') handleKeyAnswer('todo',2);
+  else if(k==='l') handleKeyAnswer('doing',2);
+});
+
+function endGame(){
+  const s1=p1Score, s2=p2Score;
+  const p1=document.getElementById('p1-display').textContent;
+  const p2=document.getElementById('p2-display').textContent;
+  document.getElementById('res1-score').textContent=s1;
+  document.getElementById('res2-score').textContent=s2;
+
+  const r1=document.getElementById('res1'), r2=document.getElementById('res2');
+  r1.classList.remove('winner'); r2.classList.remove('winner');
+
+  if(s1>s2){
+    document.getElementById('winner-name').textContent=p1;
+    document.getElementById('result-title').textContent='Winner!';
+    document.getElementById('trophy').textContent='🏆';
+    r1.classList.add('winner');
+  } else if(s2>s1){
+    document.getElementById('winner-name').textContent=p2;
+    document.getElementById('result-title').textContent='Winner!';
+    document.getElementById('trophy').textContent='🏆';
+    r2.classList.add('winner');
+  } else {
+    document.getElementById('winner-name').textContent="It's a draw!";
+    document.getElementById('result-title').textContent='';
+    document.getElementById('trophy').textContent='🤝';
+  }
+  showScreen('result-screen');
+}
+
+function playAgain(){
+  p1Score=0; p2Score=0;
+  startCountdown();
+}
+function backToStart(){
+  showScreen('start-screen');
+}
+</script>
+</body>
+</html>

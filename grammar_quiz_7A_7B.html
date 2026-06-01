@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>to do / doing — Practice Quiz</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --green:#22c55e;--green-dark:#15803d;--green-light:#dcfce7;--green-mid:#86efac;
+  --purple:#a855f7;--purple-dark:#7e22ce;--purple-light:#f3e8ff;
+  --red:#ef4444;--red-light:#fee2e2;
+  --bg:#f8fafc;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* START SCREEN */
+#start{padding:32px 20px;align-items:center;justify-content:center;gap:20px;text-align:center}
+.app-icon{width:72px;height:72px;border-radius:20px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:4px}
+.app-title{font-size:28px;font-weight:700;color:var(--text);line-height:1.2}
+.app-title span{color:var(--green-dark)}
+.app-sub{font-size:15px;color:var(--muted);line-height:1.5}
+
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.mode-card{padding:16px 12px;border-radius:14px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;text-align:left;font-family:inherit}
+.mode-card:active{transform:scale(0.97)}
+.mode-card.sel{border-color:var(--green);background:var(--green-light)}
+.mode-card.full{grid-column:1/-1}
+.mode-icon{font-size:22px;margin-bottom:6px;display:block}
+.mode-name{font-size:14px;font-weight:600;color:var(--text);display:block}
+.mode-count{font-size:12px;color:var(--muted);display:block;margin-top:2px}
+.mode-card.sel .mode-count{color:var(--green-dark)}
+
+.start-btn{width:100%;padding:16px;border-radius:14px;border:none;background:var(--green);color:#fff;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;margin-top:4px}
+.start-btn:active{transform:scale(0.98);background:var(--green-dark)}
+
+.tip-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;width:100%;text-align:left}
+.tip-box p{font-size:12px;color:var(--muted);line-height:1.6}
+.tip-box strong{color:var(--text)}
+
+/* QUIZ SCREEN */
+#quiz{padding:0;justify-content:space-between}
+.quiz-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);background:var(--card);flex-shrink:0}
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.q-back{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--muted);cursor:pointer;font-family:inherit}
+.q-back:active{background:var(--bg)}
+.q-counter{font-size:13px;font-weight:500;color:var(--muted)}
+.q-score-pill{font-size:13px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--green-light);color:var(--green-dark)}
+.progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+
+.quiz-body{flex:1;padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.tag-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.tag-7a{background:#ede9fe;color:#6d28d9}
+.tag-7b{background:#fce7f3;color:#be185d}
+.tag-mix{background:var(--green-light);color:var(--green-dark)}
+
+.sentence-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.sentence-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.sentence-text{font-size:18px;line-height:1.65;color:var(--text)}
+.blank{display:inline-block;min-width:80px;height:28px;border-bottom:2.5px solid var(--green);vertical-align:bottom;background:var(--green-light);border-radius:4px 4px 0 0;padding:0 6px;color:var(--green-dark);font-weight:600;font-size:16px;text-align:center;line-height:28px;transition:all .2s}
+.blank.correct{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.blank.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
+
+.options-grid{display:grid;gap:10px}
+.opt-btn{width:100%;padding:14px 16px;border-radius:12px;border:2px solid var(--border);background:var(--card);font-size:16px;font-weight:500;color:var(--text);cursor:pointer;font-family:inherit;text-align:center;transition:all .15s;position:relative;overflow:hidden}
+.opt-btn:active:not(.disabled){transform:scale(0.98)}
+.opt-btn.disabled{cursor:default}
+.opt-btn.selected-correct{border-color:#16a34a;background:#dcfce7;color:#15803d}
+.opt-btn.selected-wrong{border-color:var(--red);background:var(--red-light);color:var(--red)}
+.opt-btn.reveal-correct{border-color:#16a34a;background:#f0fdf4;color:#15803d}
+
+.feedback-box{padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.55;display:none}
+.feedback-box.show{display:block}
+.feedback-box.correct{background:#dcfce7;border:1px solid #86efac;color:#15803d}
+.feedback-box.wrong{background:var(--red-light);border:1px solid #fca5a5;color:#b91c1c}
+.feedback-title{font-weight:700;margin-bottom:3px}
+.feedback-rule{font-size:13px}
+
+.next-btn{margin:0 20px 20px;padding:15px;border-radius:14px;border:none;background:var(--text);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;flex-shrink:0}
+.next-btn:active{transform:scale(0.98);background:#1e293b}
+.next-btn.hidden{display:none}
+
+/* RESULT SCREEN */
+#result{padding:32px 20px;align-items:center;justify-content:center;gap:20px;text-align:center}
+.result-emoji{font-size:64px;margin-bottom:4px}
+.result-title{font-size:26px;font-weight:700}
+.result-score-big{font-size:56px;font-weight:700;color:var(--green-dark);line-height:1}
+.result-total{font-size:16px;color:var(--muted)}
+.result-msg{font-size:15px;color:var(--muted);line-height:1.6;max-width:280px}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;margin-bottom:2px}
+.stat-num.green{color:var(--green-dark)}
+.stat-num.red{color:var(--red)}
+.stat-label{font-size:12px;color:var(--muted)}
+
+.result-actions{display:flex;flex-direction:column;gap:10px;width:100%}
+.res-btn{padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;border:none}
+.res-btn:active{transform:scale(0.98)}
+.res-btn.primary{background:var(--green);color:#fff}
+.res-btn.primary:active{background:var(--green-dark)}
+.res-btn.secondary{background:var(--card);color:var(--text);border:1.5px solid var(--border)}
+</style>
+</head>
+<body>
+
+<!-- START -->
+<div class="screen active" id="start">
+  <div class="app-icon">📝</div>
+  <div class="app-title">to do <span>/</span> doing</div>
+  <div class="app-sub">Practice quiz based on your Grammar Bank exercises — Unit 7A & 7B</div>
+
+  <div style="width:100%">
+    <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;text-align:left">Choose what to practice:</div>
+    <div class="mode-grid">
+      <button class="mode-card sel" data-mode="all" onclick="selectMode(this)">
+        <span class="mode-icon">⚡</span>
+        <span class="mode-name">All mixed</span>
+        <span class="mode-count">28 questions</span>
+      </button>
+      <button class="mode-card" data-mode="7a" onclick="selectMode(this)">
+        <span class="mode-icon">➡️</span>
+        <span class="mode-name">7A only</span>
+        <span class="mode-count">Infinitive · 13 q</span>
+      </button>
+      <button class="mode-card" data-mode="7b" onclick="selectMode(this)">
+        <span class="mode-icon">🔄</span>
+        <span class="mode-name">7B only</span>
+        <span class="mode-count">Gerund · 15 q</span>
+      </button>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startQuiz()">Start quiz →</button>
+
+  <div class="tip-box">
+    <p><strong>How it works:</strong> A sentence appears with a blank. Choose the correct form. You get instant feedback with a grammar rule reminder after each answer.</p>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="quiz">
+  <div class="quiz-header">
+    <div class="quiz-top">
+      <button class="q-back" onclick="backToStart()">← Back</button>
+      <span class="q-counter" id="q-counter">1 / 12</span>
+      <span class="q-score-pill" id="q-score">0 ✓</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="quiz-body" id="quiz-body">
+    <div id="q-tag"></div>
+    <div class="sentence-card">
+      <div class="sentence-label">Complete the sentence</div>
+      <div class="sentence-text" id="q-sentence"></div>
+    </div>
+    <div class="options-grid" id="q-options"></div>
+    <div class="feedback-box" id="q-feedback">
+      <div class="feedback-title" id="fb-title"></div>
+      <div class="feedback-rule" id="fb-rule"></div>
+    </div>
+  </div>
+
+  <button class="next-btn hidden" id="next-btn" onclick="nextQuestion()">Next →</button>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="result">
+  <div class="result-emoji" id="res-emoji">🎉</div>
+  <div class="result-title" id="res-title">Well done!</div>
+  <div class="result-score-big" id="res-score">0</div>
+  <div class="result-total" id="res-total">out of 0</div>
+  <div class="result-msg" id="res-msg"></div>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num green" id="res-correct">0</div><div class="stat-label">Correct</div></div>
+    <div class="stat-card"><div class="stat-num red" id="res-wrong">0</div><div class="stat-label">Wrong</div></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="res-btn primary" onclick="restartSame()">Try again ↺</button>
+    <button class="res-btn secondary" onclick="backToStart()">Change mode</button>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // ── 7A Grammar Bank a) Match sentence halves (converted to fill-in) ──
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"I know you're tired, but try ", after:" awake for the party.",
+   correct:"to stay", wrong:["staying","stay"],
+   rule:"After <strong>try</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"In my job it's important ", after:" smartly.",
+   correct:"to dress", wrong:["dressing","dress"],
+   rule:"After adjectives like <strong>important</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"I don't know where ", after:".",
+   correct:"to park", wrong:["parking","park"],
+   rule:"After question words like <strong>where, what, how</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"We were late, so Simon offered ", after:" us a lift to the station.",
+   correct:"to give", wrong:["giving","give"],
+   rule:"After <strong>offer</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"When you give a presentation it's normal ", after:" nervous.",
+   correct:"to feel", wrong:["feeling","feel"],
+   rule:"After adjectives like <strong>normal</strong>, we use the infinitive with <em>to</em>."},
+
+  // ── 7A Grammar Bank b) Positive/negative infinitive ──
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"Hi, I'm Donna. Nice ", after:" you.",
+   correct:"to meet", wrong:["meeting","meet"],
+   rule:"After adjectives like <strong>nice</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"What do you want ", after:" tonight? Stay in or go out?",
+   correct:"to do", wrong:["doing","do"],
+   rule:"After <strong>want</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — negative infinitive',
+   before:"I promise ", after:" late.",
+   correct:"not to be", wrong:["not being","to not be"],
+   rule:"Negative infinitive = <strong>not + to + verb</strong>."},
+
+  {unit:'7a', tag:'7A — negative infinitive',
+   before:"Try ", after:" a noise. Your father's asleep.",
+   correct:"not to make", wrong:["not making","to not make"],
+   rule:"Negative infinitive = <strong>not + to + verb</strong>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"I'd really like ", after:" a new language.",
+   correct:"to learn", wrong:["learning","learn"],
+   rule:"After <strong>would like</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — negative infinitive',
+   before:"Be careful ", after:" too fast – the roads are icy.",
+   correct:"not to drive", wrong:["not driving","to not drive"],
+   rule:"After <strong>careful</strong> (adjective), we use the infinitive. Negative = <strong>not to</strong>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"My brother has decided ", after:" a new job.",
+   correct:"to look for", wrong:["looking for","look for"],
+   rule:"After <strong>decide</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7a', tag:'7A — infinitive with to',
+   before:"The museum is free. You don't need ", after:" to go in.",
+   correct:"to pay", wrong:["paying","pay"],
+   rule:"After <strong>need</strong>, we use the infinitive with <em>to</em>."},
+
+  // ── 7B Grammar Bank a) Gerund after verbs ──
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"One thing that always makes me happy is ", after:" in the sea.",
+   correct:"swimming", wrong:["to swim","swim"],
+   rule:"The gerund (<em>verb + -ing</em>) can be used <strong>as a noun</strong>, e.g. as the subject or object."},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"You can't learn to play an instrument well without ", after:" regularly.",
+   correct:"practising", wrong:["to practise","practise"],
+   rule:"After <strong>prepositions</strong> (without, at, of…), we always use the gerund."},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"My mother's very bad at ", after:" names.",
+   correct:"remembering", wrong:["to remember","remember"],
+   rule:"After <strong>prepositions</strong> (bad at, good at…), we use the gerund."},
+
+  {unit:'7b', tag:'7B — gerund as noun',
+   before:"", after:" teenagers is very hard work.",
+   correct:"Teaching", wrong:["To teach","Teach"],
+   rule:"The gerund can be the <strong>subject</strong> of a sentence, e.g. <em>Teaching is hard.</em>"},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"My sister spends hours ", after:" her friends.",
+   correct:"messaging", wrong:["to message","message"],
+   rule:"After <strong>spend time</strong>, we use the gerund."},
+
+  {unit:'7b', tag:'7B — negative gerund',
+   before:"I hate ", after:" the answer when somebody asks me a question.",
+   correct:"not knowing", wrong:["not to know","to not know"],
+   rule:"Negative gerund = <strong>not + verb + -ing</strong>. After <strong>hate</strong>, we use the gerund."},
+
+  {unit:'7b', tag:'7B — gerund as noun',
+   before:"", after:" by train is usually cheaper than by plane.",
+   correct:"Travelling", wrong:["To travel","Travel"],
+   rule:"The gerund can be the <strong>subject</strong> of a sentence."},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"My brother wants to go on ", after:" French.",
+   correct:"studying", wrong:["to study","study"],
+   rule:"After <strong>go on</strong>, we use the gerund."},
+
+  // ── 7B Grammar Bank b) Gerund or infinitive ──
+  {unit:'7b', tag:'7B — gerund as noun',
+   before:"", after:" Pilates is good for your health.",
+   correct:"Doing", wrong:["To do","Do"],
+   rule:"The gerund can be the <strong>subject</strong> of a sentence. Compare: <em>To do</em> is also possible here, but gerund is more natural."},
+
+  {unit:'7b', tag:'7B — infinitive',
+   before:"We offered ", after:" for the meal.",
+   correct:"to pay", wrong:["paying","pay"],
+   rule:"After <strong>offer</strong>, we use the infinitive with <em>to</em>."},
+
+  {unit:'7b', tag:'7B — infinitive',
+   before:"We won't take the car. It's so expensive ", after:".",
+   correct:"to park", wrong:["parking","park"],
+   rule:"After adjectives like <strong>expensive, difficult, easy</strong>, we use the infinitive."},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"I'm not very good at ", after:" directions.",
+   correct:"giving", wrong:["to give","give"],
+   rule:"After <strong>prepositions</strong> (good at, bad at…), we use the gerund."},
+
+  {unit:'7b', tag:'7B — infinitive',
+   before:"You can borrow the car if you remember ", after:" some petrol.",
+   correct:"to get", wrong:["getting","get"],
+   rule:"After <strong>remember + to do</strong> = remember to do something (you must do it). <em>remember + doing</em> = you have a memory of doing it."},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"Has it stopped ", after:" yet?",
+   correct:"raining", wrong:["to rain","rain"],
+   rule:"After <strong>stop</strong>, we use the gerund."},
+
+  {unit:'7b', tag:'7B — gerund (-ing)',
+   before:"I hate ", after:" in the dark during the winter.",
+   correct:"getting up", wrong:["to get up","get up"],
+   rule:"After <strong>hate</strong>, we use the gerund."}
+];
+
+const MESSAGES = [
+  {min:90,emoji:'🏆',title:'Perfect score!',msg:'Outstanding! You clearly know your infinitives and gerunds!'},
+  {min:75,emoji:'🎉',title:'Great job!',msg:'Really solid! A couple more rounds and you\'ll have this nailed.'},
+  {min:50,emoji:'💪',title:'Good effort!',msg:'You\'re getting there! Review the rules and try again.'},
+  {min:0,emoji:'📚',title:'Keep practising!',msg:'Don\'t worry — go through the Grammar Bank again and retry!'}
+];
+
+let selectedMode='all';
+let questions=[];
+let qIndex=0;
+let score=0;
+let wrongCount=0;
+let answered=false;
+
+function selectMode(el){
+  document.querySelectorAll('.mode-card').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedMode=el.dataset.mode;
+}
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function buildQuestions(){
+  let pool;
+  if(selectedMode==='7a') pool=ALL_QUESTIONS.filter(q=>q.unit==='7a');
+  else if(selectedMode==='7b') pool=ALL_QUESTIONS.filter(q=>q.unit==='7b');
+  else pool=[...ALL_QUESTIONS];
+  return shuffle(pool);
+}
+
+function startQuiz(){
+  questions=buildQuestions();
+  qIndex=0; score=0; wrongCount=0;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  answered=false;
+
+  document.getElementById('q-counter').textContent=(qIndex+1)+' / '+questions.length;
+  document.getElementById('q-score').textContent=score+' ✓';
+  document.getElementById('prog-fill').style.width=Math.round(qIndex/questions.length*100)+'%';
+
+  const tag=document.getElementById('q-tag');
+  const unitClass=q.unit==='7a'?'tag-7a':'tag-7b';
+  tag.innerHTML=`<span class="tag-pill ${unitClass}">${q.tag}</span>`;
+
+  const sent=document.getElementById('q-sentence');
+  sent.innerHTML=q.before+'<span class="blank" id="the-blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'+q.after;
+
+  const opts=document.getElementById('q-options');
+  const choices=shuffle([q.correct,...q.wrong]);
+  opts.innerHTML='';
+  choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=c;
+    btn.onclick=()=>handleAnswer(c,q);
+    opts.appendChild(btn);
+  });
+
+  const fb=document.getElementById('q-feedback');
+  fb.className='feedback-box';
+  document.getElementById('next-btn').classList.add('hidden');
+
+  document.getElementById('quiz-body').scrollTop=0;
+}
+
+function handleAnswer(choice, q){
+  if(answered) return;
+  answered=true;
+
+  const blank=document.getElementById('the-blank');
+  const fb=document.getElementById('q-feedback');
+  const btns=document.querySelectorAll('.opt-btn');
+
+  btns.forEach(b=>{
+    b.classList.add('disabled');
+    if(b.textContent===q.correct) b.classList.add('reveal-correct');
+  });
+
+  const clickedBtn=Array.from(btns).find(b=>b.textContent===choice);
+
+  if(choice===q.correct){
+    score++;
+    blank.textContent=choice;
+    blank.className='blank correct';
+    clickedBtn.classList.remove('reveal-correct');
+    clickedBtn.classList.add('selected-correct');
+    document.getElementById('fb-title').textContent='✓ Correct!';
+    document.getElementById('fb-rule').innerHTML=q.rule;
+    fb.className='feedback-box correct show';
+  } else {
+    wrongCount++;
+    blank.textContent=q.correct;
+    blank.className='blank wrong';
+    clickedBtn.classList.remove('reveal-correct');
+    clickedBtn.classList.add('selected-wrong');
+    document.getElementById('fb-title').textContent='✗ The answer is: '+q.correct;
+    document.getElementById('fb-rule').innerHTML=q.rule;
+    fb.className='feedback-box wrong show';
+  }
+
+  document.getElementById('q-score').textContent=score+' ✓';
+  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('next-btn').textContent=qIndex+1<questions.length?'Next →':'See results →';
+
+  setTimeout(()=>{
+    document.getElementById('quiz-body').scrollTo({top:document.getElementById('quiz-body').scrollHeight,behavior:'smooth'});
+  },150);
+}
+
+function nextQuestion(){
+  qIndex++;
+  if(qIndex>=questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult(){
+  const pct=Math.round(score/questions.length*100);
+  const msg=MESSAGES.find(m=>pct>=m.min);
+  document.getElementById('res-emoji').textContent=msg.emoji;
+  document.getElementById('res-title').textContent=msg.title;
+  document.getElementById('res-score').textContent=score;
+  document.getElementById('res-total').textContent='out of '+questions.length;
+  document.getElementById('res-msg').textContent=msg.msg;
+  document.getElementById('res-correct').textContent=score;
+  document.getElementById('res-wrong').textContent=wrongCount;
+  document.getElementById('prog-fill').style.width='100%';
+  showScreen('result');
+}
+
+function restartSame(){ startQuiz(); }
+function backToStart(){ showScreen('start'); }
+</script>
+</body>
+</html>
