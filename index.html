@@ -3,535 +3,440 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Vocabulary Match · Elementary Unit 1</title>
+<title>Gameng — English File Games</title>
 <style>
-  :root {
-    --purple: #534AB7;
-    --purple-light: #EEEDFE;
-    --purple-mid: #AFA9EC;
-    --teal: #1D9E75;
-    --teal-light: #E1F5EE;
-    --coral: #D85A30;
-    --coral-light: #FAECE7;
-    --gray-bg: #F8F7F4;
-    --gray-border: #E2E0D8;
-    --text: #1a1a18;
-    --text-muted: #6b6a64;
-    --radius: 14px;
-    --radius-sm: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--gray-bg);
-    min-height: 100dvh;
-    color: var(--text);
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+  --purple-mid: #AFA9EC;
+  --purple-dark: #3C3489;
+  --teal: #1D9E75;
+  --teal-light: #E1F5EE;
+  --coral: #D85A30;
+  --coral-light: #FAECE7;
+  --amber: #BA7517;
+  --amber-light: #FAEEDA;
+  --gray-bg: #F5F4F0;
+  --gray-border: #E2E0D8;
+  --text: #1a1a18;
+  --text-muted: #6b6a64;
+  --white: #ffffff;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--gray-bg);
+  color: var(--text);
+  min-height: 100dvh;
+}
 
-  /* ── Header ── */
-  .header {
-    background: white;
-    border-bottom: 1px solid var(--gray-border);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .header-left { display: flex; align-items: center; gap: 10px; }
-  .logo-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--purple); display: inline-block; }
-  .header h1 { font-size: 15px; font-weight: 600; }
-  .header-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
-  .score-badge {
-    background: var(--purple-light);
-    color: var(--purple);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 20px;
-  }
+/* ── Header ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.logo {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.logo img {
+  width: 28px; height: 28px;
+  object-fit: contain;
+  filter: invert(1);
+}
+.header-text h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.header-text p {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
 
-  /* ── Progress bar ── */
-  .progress-wrap { background: var(--gray-border); height: 4px; }
-  .progress-bar {
-    height: 4px;
-    background: var(--purple);
-    transition: width 0.4s ease;
-    width: 0%;
-  }
+/* ── Hero ── */
+.hero {
+  padding: 0 20px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
 
-  /* ── Timer ── */
-  .timer-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px 20px 4px;
-  }
-  .timer-track {
-    flex: 1;
-    max-width: 340px;
-    height: 6px;
-    background: var(--gray-border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .timer-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--teal);
-    transition: width 0.1s linear, background 0.3s;
-  }
-  .timer-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    min-width: 28px;
-    text-align: right;
-  }
+.hero-inner {
+  background: #0a0a0a;
+  border-radius: var(--radius);
+  margin-top: 20px;
+  padding: 28px 24px 0;
+  min-height: 160px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
 
-  /* ── Question ── */
-  .question-wrap {
-    padding: 20px 20px 8px;
-    text-align: center;
-  }
-  .question-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-  }
-  .question-word {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .question-hint {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 6px;
-  }
+.hero-text {
+  padding-bottom: 28px;
+  flex: 1;
+}
+.hero-text h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.hero-text p {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
 
-  /* ── Answer grid ── */
-  .answers {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 16px 20px 24px;
-    max-width: 460px;
-    margin: 0 auto;
-  }
-  .answer-btn {
-    background: white;
-    border: 1.5px solid var(--gray-border);
-    border-radius: var(--radius);
-    padding: 18px 12px;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text);
-    cursor: pointer;
-    transition: transform 0.1s, border-color 0.15s, background 0.15s;
-    line-height: 1.3;
-    min-height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  .answer-btn:active { transform: scale(0.96); }
-  .answer-btn.correct {
-    background: var(--teal-light);
-    border-color: var(--teal);
-    color: #085041;
-  }
-  .answer-btn.wrong {
-    background: var(--coral-light);
-    border-color: var(--coral);
-    color: #712B13;
-  }
-  .answer-btn.disabled { pointer-events: none; opacity: 0.5; }
-  .answer-btn.reveal { background: var(--teal-light); border-color: var(--teal); opacity: 0.7; }
+/* Stars decoration */
+.star {
+  position: absolute;
+  color: #ffffff;
+  font-size: 14px;
+  opacity: 0.5;
+  line-height: 1;
+  pointer-events: none;
+}
+.star-1 { top: 18px; right: 130px; font-size: 10px; opacity: 0.35; }
+.star-2 { top: 28px; right: 96px;  font-size: 16px; opacity: 0.55; }
+.star-3 { top: 55px; right: 60px;  font-size: 10px; opacity: 0.3;  }
+.star-4 { bottom: 48px; right: 148px; font-size: 12px; opacity: 0.4; }
 
-  /* ── Feedback toast ── */
-  .feedback {
-    text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.3s;
-  }
-  .feedback.correct { color: var(--teal); }
-  .feedback.wrong { color: var(--coral); }
+/* Cat image */
+.hero-cat {
+  width: 130px;
+  flex-shrink: 0;
+  align-self: flex-end;
+  position: relative;
+  bottom: 0;
+}
+.hero-cat img {
+  width: 100%;
+  display: block;
+  filter: invert(0);
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+}
 
-  /* ── Round counter ── */
-  .round-info {
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-muted);
-    padding: 0 20px 8px;
-  }
+/* ── Content ── */
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
 
-  /* ── End screen ── */
-  .end-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
-    text-align: center;
-    min-height: 70dvh;
-  }
-  .end-screen.show { display: flex; }
-  .end-emoji { font-size: 52px; margin-bottom: 16px; }
-  .end-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-  .end-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
-  .end-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-    max-width: 340px;
-    margin-bottom: 32px;
-  }
-  .stat-card {
-    background: white;
-    border: 1px solid var(--gray-border);
-    border-radius: var(--radius-sm);
-    padding: 14px 8px;
-  }
-  .stat-num { font-size: 24px; font-weight: 700; color: var(--purple); }
-  .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-  .btn-primary {
-    background: var(--purple);
-    color: white;
-    border: none;
-    border-radius: var(--radius);
-    padding: 16px 36px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    max-width: 340px;
-    margin-bottom: 12px;
-  }
-  .btn-secondary {
-    background: white;
-    color: var(--purple);
-    border: 1.5px solid var(--purple-mid);
-    border-radius: var(--radius);
-    padding: 14px 36px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    width: 100%;
-    max-width: 340px;
-  }
+/* ── Stats bar ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+  margin-top: 20px;
+}
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--purple);
+  line-height: 1;
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
 
-  /* ── Game area ── */
-  #game { display: block; }
-  #end { display: none; }
-  #end.show { display: flex; flex-direction: column; align-items: center; padding: 40px 24px; text-align: center; }
+/* ── Level section ── */
+.level-block { margin-bottom: 32px; }
 
-  /* ── Shake animation ── */
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-  }
-  .shake { animation: shake 0.35s ease; }
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.badge-pre-int  { background: var(--purple-light); color: var(--purple-dark); }
+.badge-coming   { background: var(--gray-bg); color: var(--text-muted); border: 1px dashed var(--gray-border); }
+.level-title    { font-size: 16px; font-weight: 700; color: var(--text); }
 
-  @keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06); }
-    100% { transform: scale(1); }
-  }
-  .pop { animation: pop 0.25s ease; }
+/* ── Unit group ── */
+.unit-group {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.unit-label {
+  padding: 12px 16px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--gray-border);
+}
+
+/* ── Game card ── */
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+  border-bottom: 1px solid var(--gray-border);
+}
+.game-card:last-child { border-bottom: none; }
+.game-card:active { background: var(--gray-bg); }
+
+.game-icon {
+  width: 42px; height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.icon-quiz  { background: var(--purple-light); }
+.icon-flash { background: #0a0a0a; }
+
+.game-info { flex: 1; min-width: 0; }
+.game-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.game-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.game-tags { display: flex; gap: 5px; flex-shrink: 0; }
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+.tag-solo { background: var(--teal-light); color: #085041; }
+.tag-duo  { background: #0a0a0a; color: #4ade80; }
+.tag-new  { background: var(--purple-light); color: var(--purple-dark); }
+
+.arrow-icon { color: var(--gray-border); font-size: 18px; flex-shrink: 0; margin-left: 4px; }
+
+/* ── Coming soon ── */
+.coming-block {
+  background: var(--white);
+  border: 1.5px dashed var(--gray-border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+  opacity: 0.65;
+}
+.coming-icon {
+  width: 42px; height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--gray-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.coming-text p:first-child {
+  font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px;
+}
+.coming-text p:last-child { font-size: 12px; color: var(--text-muted); }
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--gray-border);
+  background: var(--white);
+}
+.footer img {
+  width: 18px; height: 18px;
+  object-fit: contain;
+  opacity: 0.5;
+}
 </style>
 </head>
 <body>
 
 <!-- Header -->
 <div class="header">
-  <div class="header-left">
-    <span class="logo-dot"></span>
-    <div>
-      <div class="header h1" style="font-size:15px;font-weight:600;">EF Games</div>
-      <div class="header-sub">Elementary · Unit 1</div>
-    </div>
+  <div class="logo">
+    <img src="assets/cat.png" alt="Gameng cat logo">
   </div>
-  <div class="score-badge">⭐ <span id="score-display">0</span></div>
-</div>
-<div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
-
-<!-- Game area -->
-<div id="game">
-  <div class="timer-row">
-    <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
-    <div class="timer-label" id="timer-label">10</div>
+  <div class="header-text">
+    <h1>Gameng</h1>
+    <p>English File · Games & Materials</p>
   </div>
-
-  <div class="question-wrap">
-    <div class="question-label">What does this word mean?</div>
-    <div class="question-word" id="question-word">—</div>
-    <div class="question-hint" id="question-hint"></div>
-  </div>
-
-  <div class="round-info" id="round-info">Question 1 of 10</div>
-  <div class="feedback" id="feedback"></div>
-
-  <div class="answers" id="answers"></div>
 </div>
 
-<!-- End screen -->
-<div id="end">
-  <div class="end-emoji" id="end-emoji">🎉</div>
-  <div class="end-title" id="end-title">Well done!</div>
-  <div class="end-sub" id="end-sub"></div>
-  <div class="end-stats">
-    <div class="stat-card">
-      <div class="stat-num" id="stat-score">0</div>
-      <div class="stat-lbl">Points</div>
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+
+    <div class="hero-text">
+      <h2>Choose your level</h2>
+      <p>Games, practice and printable materials — organised by level and unit.</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-correct">0</div>
-      <div class="stat-lbl">Correct</div>
+
+    <!-- Decorative stars (matching the cat illustration style) -->
+    <span class="star star-1">✦</span>
+    <span class="star star-2">✦</span>
+    <span class="star star-3">✦</span>
+    <span class="star star-4">✦</span>
+
+    <!-- Cat -->
+    <div class="hero-cat">
+      <img src="assets/cat.png" alt="Gameng mascot">
     </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-time">0s</div>
-      <div class="stat-lbl">Best time</div>
-    </div>
+
   </div>
-  <button class="btn-primary" onclick="restartGame()">Play again</button>
-  <button class="btn-secondary" onclick="changeDifficulty()">Change difficulty</button>
 </div>
 
-<script>
-// ── Vocabulary data: Elementary Unit 1 (English File 4th ed.)
-const ALL_VOCAB = [
-  { word: "happy",       hint: "feeling/emotion",     answer: "счастливый" },
-  { word: "sad",         hint: "feeling/emotion",     answer: "грустный" },
-  { word: "tired",       hint: "feeling/emotion",     answer: "усталый" },
-  { word: "hungry",      hint: "feeling/state",       answer: "голодный" },
-  { word: "thirsty",     hint: "feeling/state",       answer: "хотеть пить" },
-  { word: "cold",        hint: "feeling/temperature", answer: "холодный" },
-  { word: "hot",         hint: "feeling/temperature", answer: "горячий" },
-  { word: "ill",         hint: "health",              answer: "больной" },
-  { word: "fine",        hint: "state/feeling",       answer: "хорошо" },
-  { word: "late",        hint: "time",                answer: "опоздавший" },
-  { word: "early",       hint: "time",                answer: "ранний" },
-  { word: "right",       hint: "adjective",           answer: "правильный" },
-  { word: "wrong",       hint: "adjective",           answer: "неправильный" },
-  { word: "free",        hint: "state",               answer: "свободный" },
-  { word: "busy",        hint: "state",               answer: "занятой" },
-  { word: "open",        hint: "state/verb",          answer: "открытый" },
-  { word: "closed",      hint: "state",               answer: "закрытый" },
-  { word: "cheap",       hint: "price",               answer: "дешёвый" },
-  { word: "expensive",   hint: "price",               answer: "дорогой" },
-  { word: "easy",        hint: "difficulty",          answer: "лёгкий" },
-  { word: "difficult",   hint: "difficulty",          answer: "сложный" },
-  { word: "interesting", hint: "quality",             answer: "интересный" },
-  { word: "boring",      hint: "quality",             answer: "скучный" },
-  { word: "near",        hint: "distance",            answer: "близкий" },
-  { word: "far",         hint: "distance",            answer: "далёкий" },
-  { word: "big",         hint: "size",                answer: "большой" },
-  { word: "small",       hint: "size",                answer: "маленький" },
-  { word: "new",         hint: "age",                 answer: "новый" },
-  { word: "old",         hint: "age",                 answer: "старый" },
-  { word: "fast",        hint: "speed",               answer: "быстрый" },
-];
+<!-- Content -->
+<div class="content">
 
-// ── Settings
-const QUESTIONS_PER_ROUND = 10;
-const TIME_PER_QUESTION = 10; // seconds
-const POINTS_BASE = 100;
-const POINTS_SPEED_BONUS = 50; // max speed bonus
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-num">2</div>
+      <div class="stat-lbl">Games</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">1</div>
+      <div class="stat-lbl">Level</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">1</div>
+      <div class="stat-lbl">Unit</div>
+    </div>
+  </div>
 
-// ── State
-let questions = [];
-let currentQ = 0;
-let score = 0;
-let correctCount = 0;
-let bestTime = TIME_PER_QUESTION;
-let timerInterval = null;
-let timeLeft = TIME_PER_QUESTION;
-let answered = false;
-let questionStartTime = 0;
+  <!-- Pre-Intermediate -->
+  <div class="level-block">
+    <div class="level-header">
+      <span class="level-badge badge-pre-int">Pre-Intermediate</span>
+      <span class="level-title">English File</span>
+    </div>
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+    <div class="unit-group">
+      <div class="unit-label">Unit 7 · to do / doing — Infinitive & Gerund</div>
 
-function buildQuestions() {
-  const pool = shuffle(ALL_VOCAB).slice(0, QUESTIONS_PER_ROUND);
-  return pool.map(item => {
-    const wrong = shuffle(ALL_VOCAB.filter(v => v.answer !== item.answer))
-      .slice(0, 3)
-      .map(v => v.answer);
-    const options = shuffle([item.answer, ...wrong]);
-    return { ...item, options };
-  });
-}
+      <a class="game-card" href="pre-intermediate/unit7-grammar-quiz.html">
+        <div class="game-icon icon-quiz">📝</div>
+        <div class="game-info">
+          <div class="game-title">Grammar Quiz 7A & 7B</div>
+          <div class="game-desc">Fill-in-the-blank · 28 sentences · instant feedback</div>
+        </div>
+        <div class="game-tags">
+          <span class="tag tag-solo">Solo</span>
+          <span class="tag tag-new">New</span>
+        </div>
+        <span class="arrow-icon">›</span>
+      </a>
 
-function startGame() {
-  questions = buildQuestions();
-  currentQ = 0;
-  score = 0;
-  correctCount = 0;
-  bestTime = TIME_PER_QUESTION;
-  document.getElementById('score-display').textContent = 0;
-  document.getElementById('game').style.display = 'block';
-  document.getElementById('end').classList.remove('show');
-  document.getElementById('end').style.display = 'none';
-  showQuestion();
-}
+      <a class="game-card" href="pre-intermediate/unit7-flash-duel.html">
+        <div class="game-icon icon-flash">⚡</div>
+        <div class="game-info">
+          <div class="game-title">Flash Duel</div>
+          <div class="game-desc">2 players · same keyboard · to do vs doing</div>
+        </div>
+        <div class="game-tags">
+          <span class="tag tag-duo">2P</span>
+          <span class="tag tag-new">New</span>
+        </div>
+        <span class="arrow-icon">›</span>
+      </a>
+    </div>
+  </div>
 
-function showQuestion() {
-  if (currentQ >= questions.length) { endGame(); return; }
+  <!-- Coming soon -->
+  <div class="level-block">
+    <div class="level-header">
+      <span class="level-badge badge-coming">Coming soon</span>
+    </div>
 
-  answered = false;
-  timeLeft = TIME_PER_QUESTION;
-  questionStartTime = Date.now();
+    <div class="coming-block">
+      <div class="coming-icon">📗</div>
+      <div class="coming-text">
+        <p>Elementary</p>
+        <p>Games and materials coming soon</p>
+      </div>
+    </div>
+    <div class="coming-block">
+      <div class="coming-icon">📘</div>
+      <div class="coming-text">
+        <p>Intermediate</p>
+        <p>Games and materials coming soon</p>
+      </div>
+    </div>
+    <div class="coming-block">
+      <div class="coming-icon">📙</div>
+      <div class="coming-text">
+        <p>Upper-Intermediate</p>
+        <p>Games and materials coming soon</p>
+      </div>
+    </div>
+  </div>
 
-  const q = questions[currentQ];
-  document.getElementById('question-word').textContent = q.word;
-  document.getElementById('question-hint').textContent = q.hint;
-  document.getElementById('round-info').textContent = `Question ${currentQ + 1} of ${QUESTIONS_PER_ROUND}`;
-  document.getElementById('progress').style.width = ((currentQ / QUESTIONS_PER_ROUND) * 100) + '%';
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('feedback').className = 'feedback';
+</div>
 
-  // Render answer buttons
-  const container = document.getElementById('answers');
-  container.innerHTML = '';
-  q.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'answer-btn';
-    btn.textContent = opt;
-    btn.addEventListener('click', () => handleAnswer(btn, opt, q.answer));
-    container.appendChild(btn);
-  });
+<div class="footer">
+  <img src="assets/cat.png" alt="">
+  Gameng · made with ♥ for English File lessons
+</div>
 
-  // Start timer
-  clearInterval(timerInterval);
-  updateTimer();
-  timerInterval = setInterval(() => {
-    timeLeft -= 0.1;
-    if (timeLeft <= 0) { timeLeft = 0; handleTimeout(); }
-    updateTimer();
-  }, 100);
-}
-
-function updateTimer() {
-  const pct = (timeLeft / TIME_PER_QUESTION) * 100;
-  const fill = document.getElementById('timer-fill');
-  fill.style.width = pct + '%';
-  fill.style.background = timeLeft > 5 ? '#1D9E75' : timeLeft > 3 ? '#EF9F27' : '#D85A30';
-  document.getElementById('timer-label').textContent = Math.ceil(timeLeft);
-}
-
-function handleAnswer(btn, chosen, correct) {
-  if (answered) return;
-  answered = true;
-  clearInterval(timerInterval);
-
-  const elapsed = (Date.now() - questionStartTime) / 1000;
-  const buttons = document.querySelectorAll('.answer-btn');
-
-  if (chosen === correct) {
-    btn.classList.add('correct', 'pop');
-    const speedBonus = Math.round(POINTS_SPEED_BONUS * (timeLeft / TIME_PER_QUESTION));
-    const gained = POINTS_BASE + speedBonus;
-    score += gained;
-    correctCount++;
-    if (elapsed < bestTime) bestTime = elapsed;
-    document.getElementById('score-display').textContent = score;
-    showFeedback('correct', `+${gained} pts`);
-  } else {
-    btn.classList.add('wrong', 'shake');
-    buttons.forEach(b => {
-      if (b.textContent === correct) b.classList.add('reveal');
-      else if (b !== btn) b.classList.add('disabled');
-    });
-    showFeedback('wrong', `The answer is: ${correct}`);
-  }
-
-  setTimeout(nextQuestion, 1400);
-}
-
-function handleTimeout() {
-  if (answered) return;
-  answered = true;
-  clearInterval(timerInterval);
-  const correct = questions[currentQ].answer;
-  const buttons = document.querySelectorAll('.answer-btn');
-  buttons.forEach(b => {
-    if (b.textContent === correct) b.classList.add('reveal');
-    else b.classList.add('disabled');
-  });
-  showFeedback('wrong', 'Time\'s up! The answer: ' + correct);
-  setTimeout(nextQuestion, 1600);
-}
-
-function showFeedback(type, msg) {
-  const el = document.getElementById('feedback');
-  el.textContent = msg;
-  el.className = 'feedback ' + type;
-}
-
-function nextQuestion() {
-  currentQ++;
-  showQuestion();
-}
-
-function endGame() {
-  clearInterval(timerInterval);
-  document.getElementById('game').style.display = 'none';
-  const end = document.getElementById('end');
-  end.style.display = 'flex';
-  end.classList.add('show');
-
-  const pct = Math.round((correctCount / QUESTIONS_PER_ROUND) * 100);
-  let emoji = '😅', title = 'Keep practising!';
-  if (pct >= 90) { emoji = '🏆'; title = 'Excellent!'; }
-  else if (pct >= 70) { emoji = '🎉'; title = 'Well done!'; }
-  else if (pct >= 50) { emoji = '👍'; title = 'Good effort!'; }
-
-  document.getElementById('end-emoji').textContent = emoji;
-  document.getElementById('end-title').textContent = title;
-  document.getElementById('end-sub').textContent =
-    `You got ${correctCount} out of ${QUESTIONS_PER_ROUND} correct (${pct}%). ${pct >= 70 ? 'Great job!' : 'Try again to improve your score!'}`;
-  document.getElementById('stat-score').textContent = score;
-  document.getElementById('stat-correct').textContent = `${correctCount}/${QUESTIONS_PER_ROUND}`;
-  document.getElementById('stat-time').textContent = bestTime < TIME_PER_QUESTION ? bestTime.toFixed(1) + 's' : '—';
-
-  document.getElementById('progress').style.width = '100%';
-}
-
-function restartGame() { startGame(); }
-function changeDifficulty() { alert('More levels coming soon! 🚀'); }
-
-// ── Start
-startGame();
-</script>
 </body>
 </html>
