@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alias — English File Pre-Intermediate</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══ CSS VARIABLES ═══ */
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --border: #2a2a2a;
+  --accent: #c8f53a;
+  --accent2: #ff6b35;
+  --text: #f0f0f0;
+  --muted: #666;
+  --correct: #4ade80;
+  --skip: #f87171;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* grain overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999; opacity: 0.035; mix-blend-mode: overlay;
+}
+
+/* ═══ SCREEN SYSTEM ═══ */
+.screen {
+  display: none;
+  flex-direction: column;
+  max-width: 520px;
+  width: 100%;
+  padding: 28px 24px;
+  animation: fadeIn 0.3s ease;
+  min-height: 100vh;
+  justify-content: flex-start;
+}
+.screen.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ TYPOGRAPHY ═══ */
+h1 { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.1; }
+h2 { font-family: 'DM Serif Display', serif; font-size: 24px; }
+h3 { font-family: 'DM Serif Display', serif; font-size: 18px; }
+.label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: 'DM Mono', monospace; }
+
+/* ═══ BUTTONS ═══ */
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px 24px;
+  border-radius: var(--radius);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.btn-primary { background: var(--accent); color: #0d0d0d; }
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger { background: transparent; color: var(--skip); border: 1px solid var(--skip); }
+.btn-full { width: 100%; }
+.btn-sm { padding: 10px 16px; font-size: 12px; }
+
+/* ═══ SURFACE CARDS ═══ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* ═══ INPUTS ═══ */
+.input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: var(--accent); }
+
+/* ═══ STEPPER ═══ */
+.stepper {
+  display: flex; align-items: center; gap: 12px;
+}
+.stepper-btn {
+  width: 36px; height: 36px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text);
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.stepper-btn:hover { border-color: var(--accent); color: var(--accent); }
+.stepper-val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; min-width: 48px; text-align: center;
+}
+
+/* ═══ TOGGLE ═══ */
+.toggle-wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.toggle {
+  position: relative; width: 44px; height: 24px;
+  cursor: pointer; flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: var(--border); border-radius: 24px;
+  transition: 0.2s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute;
+  width: 18px; height: 18px; left: 3px; bottom: 3px;
+  background: var(--muted); border-radius: 50%; transition: 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: var(--accent); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); background: #0d0d0d; }
+
+/* ═══ PILLS ═══ */
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+.pill.active { border-color: var(--accent); color: var(--accent); background: rgba(200,245,58,0.08); }
+.pill:hover:not(.active) { border-color: var(--text); color: var(--text); }
+
+/* ═══ DIVIDER ═══ */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* ═══ GAP HELPERS ═══ */
+.gap-8 { display: flex; flex-direction: column; gap: 8px; }
+.gap-12 { display: flex; flex-direction: column; gap: 12px; }
+.gap-16 { display: flex; flex-direction: column; gap: 16px; }
+.gap-20 { display: flex; flex-direction: column; gap: 20px; }
+.row { display: flex; gap: 12px; align-items: center; }
+.row-between { display: flex; justify-content: space-between; align-items: center; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mt-auto { margin-top: auto; }
+
+/* ═══ BADGE ═══ */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 999px; font-size: 11px;
+}
+.badge-correct { background: rgba(74,222,128,0.15); color: var(--correct); border: 1px solid rgba(74,222,128,0.3); }
+.badge-skip { background: rgba(248,113,113,0.12); color: var(--skip); border: 1px solid rgba(248,113,113,0.25); }
+.badge-penalty { background: rgba(255,107,53,0.12); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); font-size: 10px; }
+
+/* ═══ TIMER RING ═══ */
+.timer-wrap { display: flex; align-items: center; justify-content: center; }
+.timer-svg { }
+.timer-ring-circle {
+  transform: rotate(-90deg);
+  transform-origin: 60px 60px;
+}
+.timer-track { fill: none; stroke: var(--border); stroke-width: 6; }
+.timer-ring {
+  fill: none; stroke: var(--accent); stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 326.7;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.timer-ring.warning { stroke: var(--accent2); }
+#timerNum {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px; fill: var(--text); dominant-baseline: middle; text-anchor: middle;
+}
+#timerNum.warning { fill: var(--accent2); }
+
+/* ═══ WORD CARD ═══ */
+.word-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px 28px;
+  text-align: center; min-height: 180px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+}
+.word-cat { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.word-main { font-family: 'DM Serif Display', serif; font-size: 42px; line-height: 1.1; color: var(--text); }
+.word-hint {
+  font-size: 12px; color: var(--accent); margin-top: 4px;
+  background: rgba(200,245,58,0.08); border: 1px solid rgba(200,245,58,0.2);
+  border-radius: 8px; padding: 8px 14px; line-height: 1.5;
+  max-width: 340px;
+}
+.word-counter { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ═══ GAME BUTTONS ═══ */
+.game-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-skip { background: rgba(248,113,113,0.1); color: var(--skip); border: 1px solid rgba(248,113,113,0.3); font-size: 16px; padding: 20px; border-radius: 12px; font-family: 'DM Mono', monospace; cursor: pointer; letter-spacing: 0.05em; transition: all 0.15s; text-transform: uppercase; font-weight: 500; }
+.btn-skip:hover { background: rgba(248,113,113,0.2); }
+.btn-got { background: rgba(74,222,128,0.1); color: var(--correct); border: 1px solid rgba(74,222,128,0.3); font-size: 16px; padding: 20px; border-radius: 12px; font-family: 'DM Mono', monospace; cursor: pointer; letter-spacing: 0.05em; transition: all 0.15s; text-transform: uppercase; font-weight: 500; }
+.btn-got:hover { background: rgba(74,222,128,0.2); }
+
+/* ═══ FLASH ═══ */
+#flash {
+  position: fixed; inset: 0; pointer-events: none;
+  opacity: 0; z-index: 998; transition: opacity 0.1s;
+}
+
+/* ═══ TEAM COLOR DOT ═══ */
+.team-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ═══ RESULTS LIST ═══ */
+.results-list { max-height: 340px; overflow-y: auto; gap: 6px; display: flex; flex-direction: column; }
+.result-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid transparent; transition: all 0.15s;
+}
+.result-item.correct { background: rgba(74,222,128,0.07); border-color: rgba(74,222,128,0.2); }
+.result-item.skip { background: rgba(248,113,113,0.07); border-color: rgba(248,113,113,0.15); }
+.result-item:hover { filter: brightness(1.15); }
+.result-word { font-size: 13px; font-family: 'DM Mono', monospace; }
+.result-word-cat { font-size: 10px; color: var(--muted); }
+
+/* ═══ SCOREBOARD ═══ */
+.score-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.score-row.winner { border-color: var(--accent); background: rgba(200,245,58,0.06); }
+.score-val { font-family: 'DM Serif Display', serif; font-size: 24px; }
+
+/* ═══ LAST WORD BANNER ═══ */
+.last-word-banner {
+  background: rgba(255,107,53,0.1); border: 1px solid var(--accent2);
+  border-radius: 12px; padding: 14px 18px; text-align: center;
+}
+.last-word-banner p { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); }
+
+/* ═══ WORD EDITOR TABS ═══ */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { padding: 7px 12px; border-radius: 8px; font-size: 11px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-family: 'DM Mono', monospace; transition: all 0.15s; }
+.tab.active { background: var(--accent); color: #0d0d0d; border-color: var(--accent); }
+.editor-list { max-height: 400px; overflow-y: auto; gap: 6px; display: flex; flex-direction: column; }
+.editor-row { display: flex; gap: 8px; align-items: center; }
+.editor-del { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.editor-del:hover { border-color: var(--skip); color: var(--skip); }
+
+/* ═══ HEADER ═══ */
+.game-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 4px; }
+.game-team-name { font-family: 'DM Serif Display', serif; font-size: 20px; }
+
+/* TEAM CLAIM BUTTONS (Last Word) */
+.claim-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.claim-btn {
+  padding: 16px; border-radius: 10px; font-family: 'DM Mono', monospace;
+  font-size: 13px; cursor: pointer; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); transition: all 0.15s;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.claim-btn:hover { transform: scale(1.02); }
+
+@media (max-width: 480px) {
+  .screen { padding: 16px; }
+  .word-main { font-size: 32px; }
+  .game-btns, .claim-btns { grid-template-columns: 1fr; }
+}
+
+/* ═══ TURN SCREEN ═══ */
+.turn-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px 28px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.turn-round { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.turn-team { font-family: 'DM Serif Display', serif; font-size: 36px; }
+.turn-cats { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+/* ═══ END SCREEN ═══ */
+.trophy { font-size: 64px; text-align: center; }
+.winner-name { font-family: 'DM Serif Display', serif; font-size: 32px; text-align: center; }
+
+/* ═══ NOTE BOX ═══ */
+.note { font-size: 11px; color: var(--muted); line-height: 1.6; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--border); }
+.note.accent { border-left-color: var(--accent); color: var(--text); background: rgba(200,245,58,0.05); }
+
+/* ═══ PENALTY TAG ═══ */
+.penalty-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: rgba(255,107,53,0.15); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══ FLASH OVERLAY ═══ -->
+<div id="flash"></div>
+
+<!-- ════════════════════════════════
+     SCREEN 1: START
+════════════════════════════════ -->
+<div class="screen active" id="screenStart">
+  <div class="gap-20">
+    <div>
+      <div style="font-family:'DM Serif Display',serif;font-size:clamp(64px,18vw,120px);font-style:italic;color:var(--accent);line-height:0.9;letter-spacing:-4px;margin-bottom:6px">alias</div>
+      <div style="color:var(--muted);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">English File Pre-Intermediate 4th ed.</div>
+    </div>
+
+    <!-- Timer -->
+    <div class="card gap-8">
+      <div class="label">Timer per round</div>
+      <div class="stepper">
+        <button class="stepper-btn" onclick="adj('timer',-10)">−</button>
+        <span class="stepper-val" id="timerDisplay">60</span>
+        <span style="font-size:12px;color:var(--muted)">sec</span>
+        <button class="stepper-btn" onclick="adj('timer',10)">+</button>
+      </div>
+    </div>
+
+    <!-- Rounds -->
+    <div class="card gap-8">
+      <div class="label">Rounds</div>
+      <div class="stepper">
+        <button class="stepper-btn" onclick="adj('rounds',-1)">−</button>
+        <span class="stepper-val" id="roundsDisplay">3</span>
+        <button class="stepper-btn" onclick="adj('rounds',1)">+</button>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="card gap-12">
+      <div class="row-between">
+        <div class="label">Categories (Vocabulary Bank)</div>
+        <button class="btn btn-sm btn-secondary" onclick="toggleAllCats()" id="selAllBtn">Select All</button>
+      </div>
+      <div class="pills" id="catPills"></div>
+    </div>
+
+    <!-- Penalty toggle -->
+    <div class="card">
+      <div class="toggle-wrap">
+        <div>
+          <div class="label" style="margin-bottom:4px">Penalty for skip</div>
+          <div style="font-size:12px;color:var(--muted)">Each ✕ skipped word deducts 1 point</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="penaltyToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="gap-12 mt-auto">
+      <button class="btn btn-secondary btn-full" onclick="showScreen('screenWordEditor'); buildEditor()">📝 Edit Words</button>
+      <button class="btn btn-primary btn-full" onclick="goToTeams()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 2: TEAMS
+════════════════════════════════ -->
+<div class="screen" id="screenTeams">
+  <div class="gap-20">
+    <div>
+      <button class="btn btn-secondary btn-sm" onclick="showScreen('screenStart')" style="margin-bottom:16px">← Back</button>
+      <h2>Teams</h2>
+    </div>
+    <div class="gap-12" id="teamsList"></div>
+    <div class="row">
+      <button class="btn btn-secondary" onclick="addTeam()" style="flex:1">+ Add team</button>
+      <button class="btn btn-danger" onclick="removeTeam()" style="flex:1">− Remove</button>
+    </div>
+    <div class="note">Min 2 · Max 6 teams</div>
+    <div class="mt-auto">
+      <button class="btn btn-primary btn-full" onclick="startGame()">Start Game ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 3: TURN
+════════════════════════════════ -->
+<div class="screen" id="screenTurn">
+  <div style="display:flex;flex-direction:column;gap:24px;height:100%;justify-content:center;">
+    <div class="turn-card">
+      <div class="turn-round" id="turnRoundLabel"></div>
+      <div class="turn-team" id="turnTeamName"></div>
+      <div class="label">It's your turn!</div>
+      <div class="turn-cats" id="turnCatList"></div>
+    </div>
+    <div class="note accent">Describe each word without saying it.<br>Your team guesses as many as possible.</div>
+    <button class="btn btn-primary btn-full" onclick="beginTurn()">READY ▶</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 4: GAME
+════════════════════════════════ -->
+<div class="screen" id="screenGame">
+  <div class="gap-16">
+    <!-- Header -->
+    <div class="game-header">
+      <div>
+        <div class="label" id="gameRoundLabel"></div>
+        <div class="game-team-name" id="gameTeamName"></div>
+      </div>
+      <div class="timer-wrap">
+        <svg class="timer-svg" width="80" height="80" viewBox="0 0 120 120">
+          <circle class="timer-track" cx="60" cy="60" r="52"/>
+          <circle class="timer-ring" id="timerRing" cx="60" cy="60" r="52" transform="rotate(-90 60 60)"/>
+          <text id="timerNum" x="60" y="60">60</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Score display -->
+    <div class="row-between" style="padding:0 4px">
+      <div class="label">Round score</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px" id="liveScore">0</div>
+    </div>
+
+    <!-- Word card -->
+    <div class="word-card" id="wordCard">
+      <div class="word-cat" id="wordCat"></div>
+      <div class="word-main" id="wordMain">—</div>
+      <div class="word-hint" id="wordHint" style="display:none"></div>
+      <div class="word-counter" id="wordCounter"></div>
+    </div>
+
+    <!-- Game buttons -->
+    <div class="game-btns" id="gameBtns">
+      <button class="btn-skip" onclick="handleSkip()">✕ Skip</button>
+      <button class="btn-got" onclick="handleCorrect()">✓ Got it</button>
+    </div>
+
+    <!-- Last word banner (hidden initially) -->
+    <div class="last-word-banner" id="lastWordBanner" style="display:none">
+      <p>⚡ Last Word — All teams compete!</p>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">First team to explain it correctly wins the point</div>
+    </div>
+
+    <!-- Claim buttons (shown during last word) -->
+    <div class="claim-btns" id="claimBtns" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 5: RESULTS
+════════════════════════════════ -->
+<div class="screen" id="screenResults">
+  <div class="gap-16">
+    <div>
+      <div class="label" id="resultsRoundLabel"></div>
+      <h2 id="resultsTeamName"></h2>
+    </div>
+
+    <!-- Round score summary -->
+    <div class="card" id="roundScoreSummary"></div>
+
+    <div>
+      <div class="label" style="margin-bottom:10px">Tap to toggle ✓ / ✕</div>
+      <div class="results-list" id="resultsList"></div>
+    </div>
+
+    <div class="note">Review skipped words with your class. Tap any word to correct a mis-click.</div>
+
+    <button class="btn btn-primary btn-full" onclick="nextTurn()" id="resultsNextBtn">Next Team →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 6: END
+════════════════════════════════ -->
+<div class="screen" id="screenEnd">
+  <div class="gap-20" style="text-align:center">
+    <div class="trophy">🏆</div>
+    <div>
+      <div class="label" style="margin-bottom:8px">Winner</div>
+      <div class="winner-name" id="winnerName"></div>
+    </div>
+    <div class="gap-8" id="finalScores"></div>
+    <button class="btn btn-primary btn-full" onclick="resetGame()" style="margin-top:8px">Play Again</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN 7: WORD EDITOR
+════════════════════════════════ -->
+<div class="screen" id="screenWordEditor">
+  <div class="gap-16">
+    <div>
+      <button class="btn btn-secondary btn-sm" onclick="showScreen('screenStart')" style="margin-bottom:16px">← Back to Settings</button>
+      <h2>Edit Words</h2>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">Add, remove, or edit words per category</div>
+    </div>
+    <div class="tabs" id="editorTabs"></div>
+    <div class="editor-list" id="editorList"></div>
+    <button class="btn btn-secondary" onclick="addEditorWord()" style="margin-top:4px">+ Add word</button>
+    <button class="btn btn-primary btn-full" onclick="saveAndBack()">✓ Save & Back</button>
+  </div>
+</div>
+
+<script>
+// ═══ WORD DATA ═══
+// Format: { word, cat, hint? }
+// hint = special instruction shown under the word (for make/do and verb forms)
+// Categories match Vocabulary Bank pages exactly (14 pages → 14 categories)
+
+const CATEGORIES = [
+  { id: 'appearance', label: 'Appearance' },
+  { id: 'personality', label: 'Personality' },
+  { id: 'clothes', label: 'Clothes & Accessories' },
+  { id: 'holidays', label: 'Holidays' },
+  { id: 'prepositions', label: 'Prepositions' },
+  { id: 'housework', label: 'Housework & Make/Do' },
+  { id: 'shopping', label: 'Shopping' },
+  { id: 'town', label: 'Town & City' },
+  { id: 'opposites', label: 'Opposite Verbs' },
+  { id: 'verbforms', label: 'Verb + to/ing' },
+  { id: 'get', label: 'GET phrases' },
+  { id: 'confusing', label: 'Confusing Verbs' },
+  { id: 'animals', label: 'Animals' },
+  { id: 'phrasal', label: 'Phrasal Verbs' },
+];
+
+// hint: shown as a small cue below the word
+// For housework: must say "make ___" or "do ___"
+// For verb forms: must say "verb + to ___" or "verb + ___ing"
+
+let WORDS = {
+  appearance: [
+    { word: 'curly hair' },
+    { word: 'straight hair' },
+    { word: 'wavy hair' },
+    { word: 'bald' },
+    { word: 'beard' },
+    { word: 'moustache' },
+    { word: 'slim' },
+    { word: 'overweight' },
+    { word: 'medium height' },
+    { word: 'tall' },
+    { word: 'short' },
+    { word: 'big blue eyes' },
+    { word: 'freckles' },
+    { word: 'good-looking' },
+    { word: 'attractive' },
+    { word: 'handsome' },
+    { word: 'red hair' },
+    { word: 'blonde hair' },
+    { word: 'dark hair' },
+    { word: 'short hair' },
+    { word: 'long hair' },
+    { word: 'ponytail' },
+  ],
+  personality: [
+    { word: 'friendly' },
+    { word: 'unfriendly' },
+    { word: 'talkative' },
+    { word: 'quiet' },
+    { word: 'generous' },
+    { word: 'mean' },
+    { word: 'kind' },
+    { word: 'unkind' },
+    { word: 'lazy' },
+    { word: 'hard-working' },
+    { word: 'funny' },
+    { word: 'serious' },
+    { word: 'clever' },
+    { word: 'stupid' },
+    { word: 'shy' },
+    { word: 'extrovert' },
+    { word: 'patient' },
+    { word: 'impatient' },
+    { word: 'honest' },
+    { word: 'selfish' },
+  ],
+  clothes: [
+    { word: 'blouse' },
+    { word: 'cardigan' },
+    { word: 'coat' },
+    { word: 'dress' },
+    { word: 'jacket' },
+    { word: 'jeans' },
+    { word: 'leggings' },
+    { word: 'pyjamas' },
+    { word: 'shirt' },
+    { word: 'shorts' },
+    { word: 'skirt' },
+    { word: 'socks' },
+    { word: 'suit' },
+    { word: 'sweater' },
+    { word: 'tights' },
+    { word: 'top' },
+    { word: 'tracksuit' },
+    { word: 'trousers' },
+    { word: 'T-shirt' },
+    { word: 'underwear' },
+    { word: 'boots' },
+    { word: 'flip-flops' },
+    { word: 'sandals' },
+    { word: 'trainers' },
+    { word: 'belt' },
+    { word: 'cap' },
+    { word: 'hat' },
+    { word: 'gloves' },
+    { word: 'scarf' },
+    { word: 'tie' },
+    { word: 'bracelet' },
+    { word: 'earrings' },
+    { word: 'necklace' },
+    { word: 'ring' },
+  ],
+  holidays: [
+    { word: 'go abroad' },
+    { word: 'go camping' },
+    { word: 'go sightseeing' },
+    { word: 'go skiing' },
+    { word: 'go swimming' },
+    { word: 'go for a walk' },
+    { word: 'go out at night' },
+    { word: 'go sailing' },
+    { word: 'go surfing' },
+    { word: 'go fishing' },
+    { word: 'go cycling' },
+    { word: 'book a hotel' },
+    { word: 'hire a bicycle' },
+    { word: 'rent an apartment' },
+    { word: 'buy souvenirs' },
+    { word: 'take photos' },
+    { word: 'sunbathe' },
+    { word: 'book a flight online' },
+    { word: 'stay in a campsite' },
+    { word: 'spend money' },
+    { word: 'comfortable' },
+    { word: 'luxurious' },
+    { word: 'basic' },
+    { word: 'noisy' },
+    { word: 'crowded' },
+    { word: 'sunny' },
+    { word: 'foggy' },
+    { word: 'cloudy' },
+  ],
+  prepositions: [
+    { word: 'at six o\'clock' },
+    { word: 'in the morning' },
+    { word: 'on Tuesday' },
+    { word: 'in February' },
+    { word: 'at the weekend' },
+    { word: 'in winter' },
+    { word: 'on New Year\'s Day' },
+    { word: 'at night' },
+    { word: 'in 2018' },
+    { word: 'on the floor' },
+    { word: 'arrive in Paris' },
+    { word: 'arrive at the hotel' },
+    { word: 'depend on' },
+    { word: 'agree with' },
+    { word: 'listen to' },
+    { word: 'pay for' },
+    { word: 'speak to' },
+    { word: 'wait for' },
+    { word: 'worry about' },
+    { word: 'think about' },
+    { word: 'belong to' },
+    { word: 'believe in' },
+  ],
+  housework: [
+    { word: 'do the ironing', hint: '🗣 Say: "do the ironing"' },
+    { word: 'do the vacuuming', hint: '🗣 Say: "do the vacuuming"' },
+    { word: 'do the washing', hint: '🗣 Say: "do the washing"' },
+    { word: 'do the washing-up', hint: '🗣 Say: "do the washing-up"' },
+    { word: 'do the shopping', hint: '🗣 Say: "do the shopping"' },
+    { word: 'clean the floor', hint: '🗣 Say: "clean the floor"' },
+    { word: 'dust the furniture', hint: '🗣 Say: "dust the furniture"' },
+    { word: 'lay the table', hint: '🗣 Say: "lay the table"' },
+    { word: 'load the dishwasher', hint: '🗣 Say: "load the dishwasher"' },
+    { word: 'pick up dirty clothes', hint: '🗣 Say: "pick up dirty clothes"' },
+    { word: 'put away your clothes', hint: '🗣 Say: "put away your clothes"' },
+    { word: 'take out the rubbish', hint: '🗣 Say: "take out the rubbish"' },
+    { word: 'tidy your room', hint: '🗣 Say: "tidy your room"' },
+    { word: 'make the bed', hint: '🗣 Say: "make the bed"' },
+    { word: 'make lunch', hint: '🗣 Say: "make lunch"' },
+    { word: 'make a mistake', hint: '🗣 Say: "make a mistake"' },
+    { word: 'make a noise', hint: '🗣 Say: "make a noise"' },
+    { word: 'make a phone call', hint: '🗣 Say: "make a phone call"' },
+    { word: 'make friends', hint: '🗣 Say: "make friends"' },
+    { word: 'make plans', hint: '🗣 Say: "make plans"' },
+    { word: 'make an excuse', hint: '🗣 Say: "make an excuse"' },
+    { word: 'do a course', hint: '🗣 Say: "do a course"' },
+    { word: 'do an exam', hint: '🗣 Say: "do an exam"' },
+    { word: 'do homework', hint: '🗣 Say: "do homework"' },
+    { word: 'do sport', hint: '🗣 Say: "do sport"' },
+  ],
+  shopping: [
+    { word: 'basket' },
+    { word: 'changing room' },
+    { word: 'checkout' },
+    { word: 'customer' },
+    { word: 'receipt' },
+    { word: 'shelves' },
+    { word: 'shop assistant' },
+    { word: 'shopping bag' },
+    { word: 'the sales' },
+    { word: 'till' },
+    { word: 'trolley' },
+    { word: 'account' },
+    { word: 'auction' },
+    { word: 'debit card' },
+    { word: 'delivery' },
+    { word: 'payment' },
+    { word: 'website' },
+    { word: 'next-day delivery' },
+    { word: 'credit card' },
+    { word: 'try on (clothes)' },
+    { word: 'refund' },
+  ],
+  town: [
+    { word: 'bridge' },
+    { word: 'canal' },
+    { word: 'castle' },
+    { word: 'cathedral' },
+    { word: 'church' },
+    { word: 'city walls' },
+    { word: 'harbour' },
+    { word: 'lake' },
+    { word: 'market' },
+    { word: 'mosque' },
+    { word: 'museum' },
+    { word: 'palace' },
+    { word: 'ruins' },
+    { word: 'shopping centre' },
+    { word: 'statue' },
+    { word: 'synagogue' },
+    { word: 'temple' },
+    { word: 'town hall' },
+    { word: 'hill' },
+    { word: 'boring' },
+    { word: 'crowded' },
+    { word: 'dangerous' },
+    { word: 'modern' },
+    { word: 'noisy' },
+    { word: 'polluted' },
+    { word: 'historic' },
+    { word: 'quiet' },
+    { word: 'safe' },
+  ],
+  opposites: [
+    { word: 'arrive ↔ leave' },
+    { word: 'buy ↔ sell' },
+    { word: 'download ↔ upload' },
+    { word: 'find ↔ lose' },
+    { word: 'forget ↔ remember' },
+    { word: 'lend ↔ borrow' },
+    { word: 'love ↔ hate' },
+    { word: 'miss ↔ catch' },
+    { word: 'pass ↔ fail' },
+    { word: 'pick up ↔ drop off' },
+    { word: 'push ↔ pull' },
+    { word: 'send ↔ receive' },
+    { word: 'start ↔ finish' },
+    { word: 'teach ↔ learn' },
+    { word: 'turn on ↔ turn off' },
+    { word: 'win ↔ lose' },
+    { word: 'break ↔ mend' },
+    { word: 'get up ↔ go to bed' },
+  ],
+  verbforms: [
+    { word: 'decide', hint: '🗣 Say: "decide to ___"' },
+    { word: 'forget', hint: '🗣 Say: "forget to ___"' },
+    { word: 'hope', hint: '🗣 Say: "hope to ___"' },
+    { word: 'learn', hint: '🗣 Say: "learn to ___"' },
+    { word: 'need', hint: '🗣 Say: "need to ___"' },
+    { word: 'offer', hint: '🗣 Say: "offer to ___"' },
+    { word: 'plan', hint: '🗣 Say: "plan to ___"' },
+    { word: 'pretend', hint: '🗣 Say: "pretend to ___"' },
+    { word: 'promise', hint: '🗣 Say: "promise to ___"' },
+    { word: 'try', hint: '🗣 Say: "try to ___"' },
+    { word: 'want', hint: '🗣 Say: "want to ___"' },
+    { word: 'would like', hint: '🗣 Say: "would like to ___"' },
+    { word: 'enjoy', hint: '🗣 Say: "enjoy ___ing"' },
+    { word: 'finish', hint: '🗣 Say: "finish ___ing"' },
+    { word: 'go on', hint: '🗣 Say: "go on ___ing"' },
+    { word: 'give up', hint: '🗣 Say: "give up ___ing"' },
+    { word: 'mind', hint: '🗣 Say: "don\'t mind ___ing"' },
+    { word: 'miss', hint: '🗣 Say: "miss ___ing"' },
+    { word: 'spend time', hint: '🗣 Say: "spend time ___ing"' },
+    { word: 'stop', hint: '🗣 Say: "stop ___ing"' },
+    { word: 'feel like', hint: '🗣 Say: "feel like ___ing"' },
+    { word: 'keep', hint: '🗣 Say: "keep ___ing"' },
+    { word: 'avoid', hint: '🗣 Say: "avoid ___ing"' },
+  ],
+  get: [
+    { word: 'get angry' },
+    { word: 'get divorced' },
+    { word: 'get fit' },
+    { word: 'get lost' },
+    { word: 'get married' },
+    { word: 'get nervous' },
+    { word: 'get ready' },
+    { word: 'get better' },
+    { word: 'get worse' },
+    { word: 'get older' },
+    { word: 'get a job' },
+    { word: 'get a newspaper' },
+    { word: 'get a ticket' },
+    { word: 'get into a car' },
+    { word: 'get on a bus' },
+    { word: 'get on with somebody' },
+    { word: 'get up' },
+    { word: 'get home' },
+    { word: 'get to school' },
+    { word: 'get an email' },
+    { word: 'get a present' },
+    { word: 'get a prize' },
+    { word: 'get bored' },
+  ],
+  confusing: [
+    { word: 'wear' },
+    { word: 'carry' },
+    { word: 'win' },
+    { word: 'earn' },
+    { word: 'know' },
+    { word: 'meet' },
+    { word: 'hope' },
+    { word: 'wait' },
+    { word: 'watch' },
+    { word: 'look at' },
+    { word: 'look' },
+    { word: 'look like' },
+    { word: 'miss' },
+    { word: 'lose' },
+    { word: 'bring' },
+    { word: 'take' },
+    { word: 'look for' },
+    { word: 'find' },
+    { word: 'say' },
+    { word: 'tell' },
+    { word: 'lend' },
+    { word: 'borrow' },
+    { word: 'hear' },
+    { word: 'listen to' },
+  ],
+  animals: [
+    { word: 'bee' },
+    { word: 'butterfly' },
+    { word: 'mosquito' },
+    { word: 'spider' },
+    { word: 'wasp' },
+    { word: 'bull' },
+    { word: 'chicken' },
+    { word: 'cow' },
+    { word: 'goat' },
+    { word: 'horse' },
+    { word: 'pig' },
+    { word: 'sheep' },
+    { word: 'bat' },
+    { word: 'bear' },
+    { word: 'camel' },
+    { word: 'crocodile' },
+    { word: 'deer' },
+    { word: 'elephant' },
+    { word: 'giraffe' },
+    { word: 'kangaroo' },
+    { word: 'lion' },
+    { word: 'monkey' },
+    { word: 'rabbit' },
+    { word: 'snake' },
+    { word: 'tiger' },
+    { word: 'dolphin' },
+    { word: 'jellyfish' },
+    { word: 'shark' },
+    { word: 'whale' },
+  ],
+  phrasal: [
+    { word: 'be over' },
+    { word: 'go off (alarm)' },
+    { word: 'set off' },
+    { word: 'give up' },
+    { word: 'throw away' },
+    { word: 'turn down (volume)' },
+    { word: 'turn up (volume)' },
+    { word: 'look up (in a dictionary)' },
+    { word: 'fill in (a form)' },
+    { word: 'find out' },
+    { word: 'put on (clothes)' },
+    { word: 'take off (clothes)' },
+    { word: 'look after' },
+    { word: 'look forward to' },
+    { word: 'check in' },
+    { word: 'come on' },
+    { word: 'go away' },
+    { word: 'go back' },
+    { word: 'go out' },
+    { word: 'call back' },
+    { word: 'drop off' },
+    { word: 'give back' },
+    { word: 'pay back' },
+    { word: 'pick up' },
+    { word: 'put away' },
+    { word: 'send back' },
+    { word: 'take back' },
+    { word: 'take out (rubbish)' },
+    { word: 'try on' },
+    { word: 'turn off' },
+    { word: 'turn on' },
+    { word: 'write down' },
+    { word: 'get on/off (bus)' },
+    { word: 'get on with (someone)' },
+    { word: 'look for' },
+    { word: 'run out of' },
+  ],
+};
+
+// ═══ TEAM COLORS ═══
+const TEAM_COLORS = ['#c8f53a','#ff6b35','#60b8ff','#d4a5ff','#ffd97d','#4ade80'];
+
+// ═══ SETTINGS ═══
+let settings = { timer: 60, rounds: 3, categories: ['appearance','personality','clothes'] };
+let penaltyOn = false;
+
+// ═══ TEAMS & SCORES ═══
+let teams = [{ name: 'Team A' }, { name: 'Team B' }];
+let scores = [];
+
+// ═══ GAME STATE ═══
+let currentTeamIdx = 0;
+let currentRound = 1;
+let wordPool = [];
+let usedWords = new Set();
+let timerInterval = null;
+let timeLeft = 60;
+let turnWords = []; // { word, cat, result: 'correct'|'skip', hint? }
+let currentWordObj = null;
+let isLastWord = false;
+let lastWordClaimed = false;
+const CIRC = 2 * Math.PI * 52; // ≈ 326.7
+
+// ═══ EDITOR STATE ═══
+let editorCat = null;
+
+// ═══════════════════════════════
+// SCREEN NAVIGATION
+// ═══════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════
+// SETTINGS HELPERS
+// ═══════════════════════════════
+function adj(key, delta) {
+  if (key === 'timer') {
+    settings.timer = Math.min(180, Math.max(20, settings.timer + delta));
+    document.getElementById('timerDisplay').textContent = settings.timer;
+  } else if (key === 'rounds') {
+    settings.rounds = Math.min(10, Math.max(1, settings.rounds + delta));
+    document.getElementById('roundsDisplay').textContent = settings.rounds;
+  }
+}
+
+function buildCatPills() {
+  const wrap = document.getElementById('catPills');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (settings.categories.includes(cat.id) ? ' active' : '');
+    btn.textContent = cat.label;
+    btn.onclick = () => {
+      if (settings.categories.includes(cat.id)) {
+        if (settings.categories.length > 1) {
+          settings.categories = settings.categories.filter(c => c !== cat.id);
+          btn.classList.remove('active');
+        }
+      } else {
+        settings.categories.push(cat.id);
+        btn.classList.add('active');
+      }
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function toggleAllCats() {
+  const all = CATEGORIES.map(c => c.id);
+  if (settings.categories.length === all.length) {
+    settings.categories = [all[0]];
+  } else {
+    settings.categories = [...all];
+  }
+  buildCatPills();
+}
+
+// ═══════════════════════════════
+// TEAMS SCREEN
+// ═══════════════════════════════
+function goToTeams() {
+  if (settings.categories.length === 0) {
+    alert('Please select at least one category.');
+    return;
+  }
+  penaltyOn = document.getElementById('penaltyToggle').checked;
+  buildTeamsList();
+  showScreen('screenTeams');
+}
+
+function buildTeamsList() {
+  const list = document.getElementById('teamsList');
+  list.innerHTML = '';
+  teams.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `<div class="team-dot" style="background:${TEAM_COLORS[i%TEAM_COLORS.length]}"></div>
+      <input class="input" value="${t.name}" oninput="teams[${i}].name=this.value" style="flex:1">`;
+    list.appendChild(row);
+  });
+}
+
+function addTeam() {
+  if (teams.length < 6) {
+    teams.push({ name: `Team ${String.fromCharCode(65 + teams.length)}` });
+    buildTeamsList();
+  }
+}
+
+function removeTeam() {
+  if (teams.length > 2) {
+    teams.pop();
+    buildTeamsList();
+  }
+}
+
+// ═══════════════════════════════
+// GAME START
+// ═══════════════════════════════
+function startGame() {
+  scores = teams.map(() => 0);
+  currentTeamIdx = 0;
+  currentRound = 1;
+  usedWords = new Set();
+  buildWordPool();
+  goToTurnScreen();
+}
+
+function buildWordPool() {
+  wordPool = [];
+  settings.categories.forEach(catId => {
+    const words = WORDS[catId] || [];
+    words.forEach(w => wordPool.push({ ...w, cat: CATEGORIES.find(c => c.id === catId).label }));
+  });
+  shuffleArray(wordPool);
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function getNextWord() {
+  const available = wordPool.filter(w => !usedWords.has(w.word));
+  if (available.length === 0) {
+    // All used — reset
+    usedWords = new Set(turnWords.map(w => w.word));
+    return wordPool.find(w => !usedWords.has(w.word)) || wordPool[0];
+  }
+  return available[0];
+}
+
+// ═══════════════════════════════
+// TURN SCREEN
+// ═══════════════════════════════
+function goToTurnScreen() {
+  const team = teams[currentTeamIdx];
+  const color = TEAM_COLORS[currentTeamIdx % TEAM_COLORS.length];
+  document.getElementById('turnRoundLabel').textContent = `Round ${currentRound} of ${settings.rounds}`;
+  document.getElementById('turnTeamName').textContent = team.name;
+  document.getElementById('turnTeamName').style.color = color;
+  const catNames = settings.categories.map(id => CATEGORIES.find(c => c.id === id)?.label).join(', ');
+  document.getElementById('turnCatList').textContent = catNames;
+  showScreen('screenTurn');
+}
+
+function beginTurn() {
+  turnWords = [];
+  isLastWord = false;
+  lastWordClaimed = false;
+  timeLeft = settings.timer;
+  showGameScreen();
+  loadNextWord();
+  startTimer();
+}
+
+// ═══════════════════════════════
+// GAME SCREEN
+// ═══════════════════════════════
+function showGameScreen() {
+  const team = teams[currentTeamIdx];
+  const color = TEAM_COLORS[currentTeamIdx % TEAM_COLORS.length];
+  document.getElementById('gameRoundLabel').textContent = `Round ${currentRound} · ${team.name}`;
+  document.getElementById('gameTeamName').textContent = team.name;
+  document.getElementById('gameTeamName').style.color = color;
+  document.getElementById('liveScore').textContent = '0';
+  document.getElementById('lastWordBanner').style.display = 'none';
+  document.getElementById('claimBtns').style.display = 'none';
+  document.getElementById('gameBtns').style.display = 'grid';
+  showScreen('screenGame');
+}
+
+function loadNextWord() {
+  currentWordObj = getNextWord();
+  usedWords.add(currentWordObj.word);
+  document.getElementById('wordMain').textContent = currentWordObj.word;
+  document.getElementById('wordCat').textContent = currentWordObj.cat;
+  if (currentWordObj.hint) {
+    document.getElementById('wordHint').textContent = currentWordObj.hint;
+    document.getElementById('wordHint').style.display = 'block';
+  } else {
+    document.getElementById('wordHint').style.display = 'none';
+  }
+  const wordsLeft = wordPool.filter(w => !usedWords.has(w.word)).length;
+  document.getElementById('wordCounter').textContent = `${wordsLeft} word${wordsLeft !== 1 ? 's' : ''} remaining`;
+  updateLiveScore();
+}
+
+function updateLiveScore() {
+  const correct = turnWords.filter(w => w.result === 'correct').length;
+  const penalty = penaltyOn ? turnWords.filter(w => w.result === 'skip').length : 0;
+  document.getElementById('liveScore').textContent = correct - penalty;
+}
+
+// ═══════════════════════════════
+// TIMER
+// ═══════════════════════════════
+function startTimer() {
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      triggerLastWord();
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const pct = timeLeft / settings.timer;
+  const offset = CIRC * (1 - pct);
+  const ring = document.getElementById('timerRing');
+  const num = document.getElementById('timerNum');
+  ring.style.strokeDashoffset = offset;
+  num.textContent = timeLeft;
+  if (timeLeft <= 10) {
+    ring.classList.add('warning');
+    num.classList.add('warning');
+  } else {
+    ring.classList.remove('warning');
+    num.classList.remove('warning');
+  }
+}
+
+// ═══════════════════════════════
+// ACTIONS: GOT IT / SKIP
+// ═══════════════════════════════
+function handleCorrect() {
+  if (isLastWord) return;
+  flash('correct');
+  turnWords.push({ word: currentWordObj.word, cat: currentWordObj.cat, result: 'correct', hint: currentWordObj.hint });
+  updateLiveScore();
+  loadNextWord();
+}
+
+function handleSkip() {
+  if (isLastWord) return;
+  flash('skip');
+  turnWords.push({ word: currentWordObj.word, cat: currentWordObj.cat, result: 'skip', hint: currentWordObj.hint });
+  updateLiveScore();
+  loadNextWord();
+}
+
+function flash(type) {
+  const el = document.getElementById('flash');
+  el.style.background = type === 'correct' ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.10)';
+  el.style.opacity = 1;
+  setTimeout(() => { el.style.opacity = 0; }, 200);
+}
+
+// ═══════════════════════════════
+// LAST WORD (all teams compete)
+// ═══════════════════════════════
+function triggerLastWord() {
+  isLastWord = true;
+  // Current word stays on screen
+  document.getElementById('gameBtns').style.display = 'none';
+  document.getElementById('lastWordBanner').style.display = 'block';
+
+  // Build claim buttons for all teams
+  const claimWrap = document.getElementById('claimBtns');
+  claimWrap.innerHTML = '';
+  teams.forEach((team, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'claim-btn';
+    btn.style.borderColor = TEAM_COLORS[i % TEAM_COLORS.length];
+    btn.style.color = TEAM_COLORS[i % TEAM_COLORS.length];
+    btn.textContent = team.name;
+    btn.onclick = () => claimLastWord(i);
+    claimWrap.appendChild(btn);
+  });
+
+  const nooneBtn = document.createElement('button');
+  nooneBtn.className = 'claim-btn';
+  nooneBtn.style.gridColumn = '1/-1';
+  nooneBtn.style.color = 'var(--muted)';
+  nooneBtn.textContent = 'Nobody got it';
+  nooneBtn.onclick = () => claimLastWord(-1);
+  claimWrap.appendChild(nooneBtn);
+
+  claimWrap.style.display = 'grid';
+}
+
+function claimLastWord(teamIdx) {
+  if (lastWordClaimed) return;
+  lastWordClaimed = true;
+
+  if (teamIdx >= 0) {
+    // Award point to claiming team
+    scores[teamIdx] += 1;
+    flash('correct');
+  }
+
+  // Add to turn words as not counted for current team (it's a bonus for another team)
+  // Do not double-count if current team claims their own
+  if (teamIdx === currentTeamIdx) {
+    turnWords.push({ word: currentWordObj.word, cat: currentWordObj.cat, result: 'correct', hint: currentWordObj.hint });
+  } else {
+    // Other team claimed it - still note it
+    turnWords.push({ word: currentWordObj.word, cat: currentWordObj.cat, result: 'last-word', hint: currentWordObj.hint, claimedBy: teamIdx >= 0 ? teams[teamIdx].name : null });
+  }
+
+  // Small delay then go to results
+  setTimeout(() => goToResults(), 600);
+}
+
+// ═══════════════════════════════
+// RESULTS SCREEN
+// ═══════════════════════════════
+function goToResults() {
+  const team = teams[currentTeamIdx];
+  const color = TEAM_COLORS[currentTeamIdx % TEAM_COLORS.length];
+  document.getElementById('resultsRoundLabel').textContent = `Round ${currentRound} · Results`;
+  document.getElementById('resultsTeamName').textContent = team.name;
+  document.getElementById('resultsTeamName').style.color = color;
+
+  // Apply scores from turn
+  applyTurnScores();
+
+  // Summary
+  renderRoundSummary();
+  renderResultsList();
+
+  // Button label
+  const isLast = (currentRound === settings.rounds && currentTeamIdx === teams.length - 1);
+  document.getElementById('resultsNextBtn').textContent = isLast ? 'See Final Scores →' : 'Next Team →';
+
+  showScreen('screenResults');
+}
+
+function applyTurnScores() {
+  let delta = 0;
+  turnWords.forEach(w => {
+    if (w.result === 'correct') delta += 1;
+    if (w.result === 'skip' && penaltyOn) delta -= 1;
+  });
+  scores[currentTeamIdx] = (scores[currentTeamIdx] || 0) + delta;
+}
+
+function renderRoundSummary() {
+  const correct = turnWords.filter(w => w.result === 'correct').length;
+  const skipped = turnWords.filter(w => w.result === 'skip').length;
+  const penalty = penaltyOn ? skipped : 0;
+  const roundScore = correct - penalty;
+  const el = document.getElementById('roundScoreSummary');
+  el.innerHTML = `
+    <div class="row-between" style="flex-wrap:wrap;gap:10px">
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div><div class="label">Correct</div><div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--correct)">${correct}</div></div>
+        <div><div class="label">Skipped</div><div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--skip)">${skipped}</div></div>
+        ${penaltyOn ? `<div><div class="label">Penalty</div><div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--accent2)">−${penalty}</div></div>` : ''}
+      </div>
+      <div>
+        <div class="label">Round score</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:36px">${roundScore > 0 ? '+' : ''}${roundScore}</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row-between">
+      <div class="label">Total: ${teams[currentTeamIdx].name}</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px">${scores[currentTeamIdx]}</div>
+    </div>`;
+}
+
+function renderResultsList() {
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  turnWords.forEach((w, i) => {
+    const item = document.createElement('div');
+    const isLW = w.result === 'last-word';
+    item.className = `result-item ${isLW ? 'skip' : w.result}`;
+    item.dataset.idx = i;
+
+    let badge = '';
+    if (isLW) {
+      badge = `<span class="badge badge-skip">Last word${w.claimedBy ? ' → ' + w.claimedBy : ''}</span>`;
+    } else if (w.result === 'correct') {
+      badge = `<span class="badge badge-correct">✓ correct</span>`;
+      if (penaltyOn) {} // no penalty for correct
+    } else {
+      badge = `<span class="badge badge-skip">✕ skip</span>`;
+      if (penaltyOn) badge += ` <span class="penalty-tag">−1</span>`;
+    }
+
+    item.innerHTML = `
+      <div>
+        <div class="result-word">${w.word}</div>
+        <div class="result-word-cat">${w.cat}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">${badge}</div>`;
+
+    if (!isLW) item.onclick = () => toggleResult(i);
+    list.appendChild(item);
+  });
+}
+
+function toggleResult(idx) {
+  const w = turnWords[idx];
+  if (w.result === 'last-word') return;
+
+  // Adjust score before change
+  if (w.result === 'correct') {
+    scores[currentTeamIdx] -= 1;
+    w.result = 'skip';
+    if (penaltyOn) scores[currentTeamIdx] -= 1;
+  } else {
+    if (penaltyOn) scores[currentTeamIdx] += 1; // remove penalty
+    scores[currentTeamIdx] += 1;
+    w.result = 'correct';
+  }
+
+  renderRoundSummary();
+  renderResultsList();
+}
+
+function nextTurn() {
+  const isLast = (currentRound === settings.rounds && currentTeamIdx === teams.length - 1);
+  if (isLast) {
+    showEndScreen();
+    return;
+  }
+  currentTeamIdx++;
+  if (currentTeamIdx >= teams.length) {
+    currentTeamIdx = 0;
+    currentRound++;
+  }
+  goToTurnScreen();
+}
+
+// ═══════════════════════════════
+// END SCREEN
+// ═══════════════════════════════
+function showEndScreen() {
+  const ranked = teams.map((t, i) => ({ name: t.name, score: scores[i], color: TEAM_COLORS[i % TEAM_COLORS.length] }))
+    .sort((a, b) => b.score - a.score);
+
+  document.getElementById('winnerName').textContent = ranked[0].name;
+  document.getElementById('winnerName').style.color = ranked[0].color;
+
+  const fsEl = document.getElementById('finalScores');
+  fsEl.innerHTML = '';
+  ranked.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'score-row' + (i === 0 ? ' winner' : '');
+    row.innerHTML = `
+      <div class="row" style="gap:10px">
+        <div class="team-dot" style="background:${t.color}"></div>
+        <span>${t.name}</span>
+        ${i === 0 ? '<span style="font-size:11px;color:var(--accent)">🏆</span>' : ''}
+      </div>
+      <div class="score-val" style="color:${t.color}">${t.score}</div>`;
+    fsEl.appendChild(row);
+  });
+
+  showScreen('screenEnd');
+}
+
+function resetGame() {
+  teams = [{ name: 'Team A' }, { name: 'Team B' }];
+  scores = [];
+  currentTeamIdx = 0;
+  currentRound = 1;
+  usedWords = new Set();
+  turnWords = [];
+  if (timerInterval) clearInterval(timerInterval);
+  showScreen('screenStart');
+}
+
+// ═══════════════════════════════
+// WORD EDITOR
+// ═══════════════════════════════
+function buildEditor() {
+  const activeCats = settings.categories;
+  editorCat = activeCats[0];
+
+  // Build tabs
+  const tabs = document.getElementById('editorTabs');
+  tabs.innerHTML = '';
+  activeCats.forEach(catId => {
+    const cat = CATEGORIES.find(c => c.id === catId);
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (catId === editorCat ? ' active' : '');
+    btn.textContent = cat.label;
+    btn.onclick = () => {
+      editorCat = catId;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderEditorList();
+    };
+    tabs.appendChild(btn);
+  });
+
+  renderEditorList();
+}
+
+function renderEditorList() {
+  const list = document.getElementById('editorList');
+  list.innerHTML = '';
+  const words = WORDS[editorCat] || [];
+  words.forEach((w, i) => {
+    const row = document.createElement('div');
+    row.className = 'editor-row';
+    row.innerHTML = `
+      <input class="input" value="${w.word}" oninput="WORDS['${editorCat}'][${i}].word=this.value" style="flex:1">
+      <button class="editor-del" onclick="deleteWord('${editorCat}',${i})">×</button>`;
+    list.appendChild(row);
+  });
+}
+
+function deleteWord(catId, idx) {
+  WORDS[catId].splice(idx, 1);
+  renderEditorList();
+}
+
+function addEditorWord() {
+  if (!WORDS[editorCat]) WORDS[editorCat] = [];
+  WORDS[editorCat].push({ word: '' });
+  renderEditorList();
+  // Focus last input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('#editorList .input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
+}
+
+function saveAndBack() {
+  // Remove empty words
+  Object.keys(WORDS).forEach(catId => {
+    WORDS[catId] = WORDS[catId].filter(w => w.word.trim() !== '');
+  });
+  showScreen('screenStart');
+}
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+buildCatPills();
+</script>
+</body>
+</html>
